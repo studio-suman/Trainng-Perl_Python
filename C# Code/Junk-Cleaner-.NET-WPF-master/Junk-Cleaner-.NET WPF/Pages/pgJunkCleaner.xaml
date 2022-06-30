@@ -1,0 +1,89 @@
+﻿<Page x:Class="Junk_Cleaner_.NET_WPF.pgJunkCleaner"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+      xmlns:local="clr-namespace:Junk_Cleaner_.NET_WPF"
+      mc:Ignorable="d" 
+      d:DesignHeight="400" d:DesignWidth="500"
+      MinWidth="500" MinHeight="285" 
+      MaxHeight="650" MaxWidth="700" 
+      Title="pgJunkCleaner">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="100*"/>
+        </Grid.RowDefinitions>
+        <TabControl x:Name="tbProperties" Grid.RowSpan="4"  VerticalAlignment="Top" Margin="0,5,5,0" BorderBrush="White" BorderThickness="1.5" >
+            <TabControl.Background>
+                <SolidColorBrush Color="White" Opacity="0"/>
+            </TabControl.Background>
+            <TabItem x:Name="tbWindows" Header="Windows" FontWeight="Bold" Foreground="SteelBlue">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid x:Name="grdWinElements" >
+                        <Grid.Background>
+                            <SolidColorBrush Color="#FF0081B2" Opacity="0.1"/>
+                        </Grid.Background>
+
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem x:Name="tbApplications" Header="Applications" FontWeight="Bold" Foreground="SteelBlue">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid x:Name="grdAppElements" >
+                        <Grid.Background>
+                            <SolidColorBrush Color="#FF0081B2" Opacity="0.1"/>
+                        </Grid.Background>
+
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+        <GroupBox x:Name="gbxAnalysisInfo" Header="Analysis Information" VerticalAlignment="Top" 
+                  Foreground="SteelBlue" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" BorderThickness="0.5" BorderBrush="White" FontWeight="Bold">
+            <GroupBox.Background>
+                <SolidColorBrush Color="#FF0081B2" Opacity="0.1"/>
+            </GroupBox.Background>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid Margin="0,5,0,0" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock x:Name="txtProcessStatus" Text="" VerticalAlignment="Top" FontFamily="Consolas" FontSize="12" FontWeight="Bold" Foreground="White" />
+                    <ProgressBar x:Name="pgbFilesStatus" Minimum="0" Maximum="100" Value="{Binding InsertBindingHere}" FontSize="14" Grid.Column="1" Foreground="LimeGreen" />
+                    <TextBlock Text="{Binding ElementName=pgbFilesStatus, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Consolas" FontSize="14" FontWeight="Bold" Grid.Column="1" Foreground="Black" />
+                </Grid>
+                <TextBlock x:Name="txtTotalStatus" Text="" Margin="0,5"  VerticalAlignment="Top" FontFamily="Consolas" FontSize="14" FontWeight="Bold" Foreground="#FF40FF37" HorizontalAlignment="Center" Grid.Row="1" />
+            </Grid>
+        </GroupBox>
+        <!--<ProgressBar x:Name="pgbFilesStatus" Height="20" Margin="175,25,15,0" VerticalAlignment="Top"/>-->
+        <Button x:Name="btnAnalyze" Content="Analyze" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Bottom" Width="75" Foreground="Black" BorderBrush="#FF154FE8" Background="SteelBlue" Click="BtnAnalyze_Click" Height="35" Grid.Column="1" Grid.Row="3"/>
+        <Button x:Name="btnEraze" Content="Eraze" HorizontalAlignment="Right" Margin="0,10,0,0" VerticalAlignment="Bottom" Width="75" Background="SteelBlue" Foreground="Black" BorderBrush="#FF4578FF" Height="35" Grid.Column="1" Grid.Row="3"/>
+
+        <Expander x:Name="expJunkFiles" Header="Junk Files" Margin="0" VerticalAlignment="Top" 
+                  Foreground="SteelBlue" Grid.Column="1" Grid.Row="2" FontWeight="Bold" BorderBrush="White" BorderThickness="1.5" MaxHeight="450">
+            <ScrollViewer  VerticalScrollBarVisibility="Auto" >
+                <Grid x:Name="grdFileInfo" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                </Grid>
+            </ScrollViewer>
+        </Expander>
+
+    </Grid>
+</Page>

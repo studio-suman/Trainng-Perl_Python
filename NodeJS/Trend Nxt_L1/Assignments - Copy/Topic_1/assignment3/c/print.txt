@@ -1,0 +1,2 @@
+number of seconds in 1 year : 31536000
+number of seconds in 1 century : 3153600000

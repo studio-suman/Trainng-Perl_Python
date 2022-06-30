@@ -1,0 +1,15 @@
+<form>
+    <div class="form-group">
+    <label for="firstName">First Name</label>
+    <input required ngModel name="firstName" #firstName="ngModel" (change)="log(firstName)" id="firstName" type="text" class="form-contr">
+</div>
+<div class="form-group">
+    <label for="comment">Comment</label>
+    <textarea id="comment" cols="30" rows="10" class=""></textarea>
+</div>
+<button class="btn btn-primary">Submit</button>
+<mat-checkbox 
+    class="example-margin"
+    [value]=""
+    checked="checked">Check me!</mat-checkbox>
+</form>

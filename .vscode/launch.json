@@ -1,0 +1,103 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+    {
+        "name": "Launch Angular(Chrome)",
+        "request": "launch",
+        "type": "chrome",
+        "url": "http://localhost:4200",
+        "webRoot": "${workspaceFolder}"
+    },
+    {
+        "name": "Launch Chrome(JS)",
+        "request": "launch",
+        "type": "pwa-chrome",
+        "url": "http://127.0.0.1:5500/javascript/index.html",
+        "webRoot": "${workspaceFolder}"
+    },
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Go - Launch file",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${file}",
+            "cwd": "${fileDirname}",
+            //"remotePath": "${workspaceRoot}\\main",
+            //"port": 2345,
+            //"host": "127.0.0.1",
+            //"program": "${workspaceRoot}\\main",
+            //"preLaunchTask": "debug-attach",
+            //"env": {},
+            //"args": [],
+            //"showLog": true
+        },
+        {
+            "name": " Go - Launch Package",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}"
+        },
+        {
+            "type": "java",
+            "name": "Launch with Arguments Prompt",
+            "request": "launch",
+            "mainClass": "",
+            "args": "${command:SpecifyProgramArgs}"
+        },
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "name": ".NET Core Launch (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/C# Code/test/bin/Debug/net5.0/test.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/C# Code/test/",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        },
+        {
+            "type": "R-Debugger",
+            "name": "Debug R-File",
+            "request": "launch",
+            "debugMode": "file",
+            "workingDirectory": "",
+            "file": "${file}"
+        },
+        {
+            "name": "Debug Python Code",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "Debug .NodeJS Code",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${file}"
+        },
+        {
+            "type": "node-terminal",
+            "name": "Create JavaScript Debug Terminal",
+            "request": "launch",
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

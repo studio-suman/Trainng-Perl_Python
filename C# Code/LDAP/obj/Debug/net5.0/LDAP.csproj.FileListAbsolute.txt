@@ -1,0 +1,5 @@
+c:\Users\HSASS\OneDrive - Wipro\Desktop\Trainng-Perl_Python\C# Code\LDAP\obj\Debug\net5.0\LDAP.csprojAssemblyReference.cache
+c:\Users\HSASS\OneDrive - Wipro\Desktop\Trainng-Perl_Python\C# Code\LDAP\obj\Debug\net5.0\LDAP.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\HSASS\OneDrive - Wipro\Desktop\Trainng-Perl_Python\C# Code\LDAP\obj\Debug\net5.0\LDAP.AssemblyInfoInputs.cache
+c:\Users\HSASS\OneDrive - Wipro\Desktop\Trainng-Perl_Python\C# Code\LDAP\obj\Debug\net5.0\LDAP.AssemblyInfo.cs
+c:\Users\HSASS\OneDrive - Wipro\Desktop\Trainng-Perl_Python\C# Code\LDAP\obj\Debug\net5.0\LDAP.csproj.CoreCompileInputs.cache
