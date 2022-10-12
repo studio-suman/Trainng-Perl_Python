@@ -1,0 +1,28 @@
+1) List the emps who are senior to their own manager.                                                           2) 2) List the emps whose sal greater than blakes sal.
+3) List the dept 10 emps whose sal>allen sal.
+4) List the mgrs who are senior to king and who are junior to smith.
+5) List the empno,ename,loc,sal,dname,loc of the all the emps belonging to king dept.
+6) List the emps whose salgrade are greater than the grade of miller.
+7) List the emps who are belonging dallas or Chicago with the grade same as adamsor exp more than smith.
+8) List the emps whose sal is same as ford or blake.
+9) List the emps whose sal is same as any one of the following.
+             a) Sal of any clerk of emp1 table.  
+             b) Any emp of emp2 joined before 82.
+             c) The total remuneration (sal+comm.) of all sales person of Sales dept belonging to emp3 table.
+             d) Any Grade 4 emps Sal of emp 4 table.
+             e) Any emp Sal of emp5 table.
+
+10) List the details of most recently hired emp of dept 30.
+11) List the highest paid emp of Chicago joined before the most  recently hired emp of grade 2.
+12) List the highest paid emp working under king.
+13) List the empno,ename,deptno,loc of all the emps.
+14) List the empno,ename,loc,dname of all the depts.,10 and 20.
+15) List the empno, ename, sal, loc of the emps working at Chicago dallas with an exp>6ys.
+16) List the emps along with loc of those who belongs to dallas ,newyork with sal ranging from 2000 to 5000 joined in 81.
+17) List the empno,ename,sal,grade of all emps
+18) List the grade 2 and 3 emp of Chicago
+19) List the emps with loc and grade of accounting dept or the locs dallas or Chicago with the grades 3 to 5 &exp >6y
+20) List the grades 3 emps of research and operations depts.. joined after 1987 and whose names should not be either miller or allen.
+21) List the emps whose job is same as smith.
+22)  List the emps who are senior to miller.
+23) List the emps whose job is same as either allen or sal>allen

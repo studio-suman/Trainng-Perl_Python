@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "D61zE5kL+5Yz0xp+6hcAEfpd/TWWboEnMHra4FtkYhYwjyYakHnrJxFUBYpUco8UvwB/XUHuSIQPGo1mg6FStg==",
+  "success": true,
+  "projectFilePath": "c:\\Users\\HSASS\\OneDrive - Wipro\\Desktop\\Trainng-Perl_Python\\C# Code\\Suman\\Mis_DB\\Mis_DB.sqlproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\HSASS\\.nuget\\packages\\microsoft.netframework.referenceassemblies\\1.0.0\\microsoft.netframework.referenceassemblies.1.0.0.nupkg.sha512",
+    "C:\\Users\\HSASS\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net46\\1.0.0\\microsoft.netframework.referenceassemblies.net46.1.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

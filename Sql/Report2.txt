@@ -1,0 +1,51 @@
+Operation stopped...
+
+- Initializing Data Flow Task (Success)
+
+- Initializing Connections (Success)
+
+- Setting SQL Command (Success)
+
+- Setting Source Connection (Success)
+
+- Setting Destination Connection (Success)
+
+- Validating (Success)
+	Messages
+	* Warning 0x80049304: Data Flow Task 1: Warning: Could not open global shared memory to communicate with performance DLL; data flow performance counters are not available.  To resolve, run this package as an administrator, or on the system's console.
+	 (SQL Server Import and Export Wizard)
+	
+
+- Prepare for Execute (Success)
+
+- Pre-execute (Success)
+	Messages
+	* Information 0x402090dc: Data Flow Task 1: The processing of file "C:\Users\HSASS\OneDrive - Wipro\Desktop\AIR\AIR_Creation_20_21_Q1_Q2_Q3.csv" has started.
+	 (SQL Server Import and Export Wizard)
+	
+
+- Executing (Success)
+
+- Copying to [dbo].[AIR_Creation_20_21_Q1_Q2_Q3] (Error)
+	Messages
+	* Error 0xc0202055: Data Flow Task 1: The column delimiter for column "CUSTOMER_NAME" was not found.
+	 (SQL Server Import and Export Wizard)
+	
+	* Error 0xc0202092: Data Flow Task 1: An error occurred while processing file "C:\Users\HSASS\OneDrive - Wipro\Desktop\AIR\AIR_Creation_20_21_Q1_Q2_Q3.csv" on data row 275845.
+	 (SQL Server Import and Export Wizard)
+	
+	* Error 0xc0047038: Data Flow Task 1: SSIS Error Code DTS_E_PRIMEOUTPUTFAILED.  The PrimeOutput method on Source - AIR_Creation_20_21_Q1_Q2_Q3_csv returned error code 0xC0202092.  The component returned a failure code when the pipeline engine called PrimeOutput(). The meaning of the failure code is defined by the component, but the error is fatal and the pipeline stopped executing.  There may be error messages posted before this with more information about the failure.
+	 (SQL Server Import and Export Wizard)
+	
+
+- Post-execute (Success)
+	Messages
+	* Information 0x402090dd: Data Flow Task 1: The processing of file "C:\Users\HSASS\OneDrive - Wipro\Desktop\AIR\AIR_Creation_20_21_Q1_Q2_Q3.csv" has ended.
+	 (SQL Server Import and Export Wizard)
+	
+	* Information 0x4004300b: Data Flow Task 1: "Destination - AIR_Creation_20_21_Q1_Q2_Q3" wrote 275604 rows.
+	 (SQL Server Import and Export Wizard)
+	
+
+
+

@@ -1,0 +1,22 @@
+package AccessModifiers;
+
+public class Test4 extends Test1{
+    public void mydisplay() {
+        System.out.println("From child Class Method");
+        System.out.println("Public : "+p1);
+        System.out.println("Protected : "+p2);
+        System.out.println("Default : "+p3);
+        //System.out.println("Private : "+p4);
+    }
+    
+    public static void main(String[] args) {
+        Test4 ob = new Test4();
+        ob.display();
+        System.out.println("From Main in same class");
+        
+        System.out.println("Public : "+ob.p1);
+        System.out.println("Protected : "+ob.p2);
+        System.out.println("Default : "+ob.p3);
+        //System.out.println("Private : "+ob.p4);
+    }
+}

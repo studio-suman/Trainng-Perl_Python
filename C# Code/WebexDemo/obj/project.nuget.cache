@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "dgSpecHash": "xTSJFNJwkp578y83muwWFH4RZ/WoIOJ7gt8aCS1UlqsxATOX5S6uXzwi8p6LJ4hPRFB4EJ448QOapBbBlwJjiw==",
+  "success": false,
+  "projectFilePath": "C:\\Users\\HSASS\\OneDrive - Wipro\\Desktop\\Trainng-Perl_Python\\C# Code\\WebexDemo\\WebexDemo.fsproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\HSASS\\.nuget\\packages\\fsharp.core\\5.0.0\\fsharp.core.5.0.0.nupkg.sha512",
+    "C:\\Users\\HSASS\\.nuget\\packages\\system.valuetuple\\4.4.0\\system.valuetuple.4.4.0.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1202",
+      "level": "Error",
+      "message": "Package FSharp.Core 5.0.0 is not compatible with net45 (.NETFramework,Version=v4.5). Package FSharp.Core 5.0.0 supports: netstandard2.0 (.NETStandard,Version=v2.0)",
+      "libraryId": "FSharp.Core",
+      "targetGraphs": [
+        ".NETFramework,Version=v4.5"
+      ]
+    },
+    {
+      "code": "NU1202",
+      "level": "Error",
+      "message": "Package FSharp.Core 5.0.0 is not compatible with net45 (.NETFramework,Version=v4.5) / win7-x86. Package FSharp.Core 5.0.0 supports: netstandard2.0 (.NETStandard,Version=v2.0)",
+      "libraryId": "FSharp.Core",
+      "targetGraphs": [
+        ".NETFramework,Version=v4.5/win7-x86"
+      ]
+    }
+  ]
+}

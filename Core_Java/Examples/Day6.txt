@@ -1,0 +1,234 @@
+https://tests.mettl.com/authenticateKey/307egu3p4w
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+public class Demo1ArrayList {
+    public static void main(String[] args) {
+        List<Integer> lt = new ArrayList<Integer>();
+        lt.add(20);
+        lt.add(30);
+        lt.add(10);
+        lt.add(40);
+        System.out.println(lt);
+        int sum=0;
+        for(int ele : lt) {
+            System.out.println(ele);
+            sum=sum+ele;
+        }
+        System.out.println("Added value = "+sum);
+        Iterator<Integer> itr = lt.iterator();
+        while(itr.hasNext()) {
+            int x = itr.next();
+            System.out.println(x);
+            if(x < 20)
+                itr.remove();
+        }
+        System.out.println(lt);
+        //lambda Expression
+        /*void myfn(int e) {
+            System.out.println(e);
+        }*/
+        /**
+         * return type -- NA
+         * function name -- NA Anonymous functions
+         * () input paraters -- yes but without data types
+         * -> -- its a lambda expression
+         * {} -- function body : yes
+         */
+        System.out.println("Using Lambda Expression");
+        lt.forEach((ele)->{System.out.println(ele);});
+    }
+
+from Suman Saha to everyone:    5:27 PM
+yes
+from Sureka Rajeshwari to everyone:    5:44 PM
+import java.util.TreeMap;
+import java.util.Map;
+public class Demo6Maps {
+public static void main(String[] args) {
+    Map<Integer, String> map = new TreeMap<Integer, String>();
+    map.put(101, "Scott");
+    map.put(201,"Allen");
+    map.put(105, "Scott");
+    map.put(102, "Martin");
+    map.put(101, "Mary");
+    map.put(204,"Allen");
+    System.out.println(map);
+    System.out.println("using forEach method");
+    map.forEach((K,V)->{System.out.println(K+" : "+V);});
+    
+    for(Map.Entry<Integer, String> ele : map.entrySet()) {
+        System.out.println(ele.getKey() + " = "+ele.getValue());
+    }
+}
+}
+
+from Sureka Rajeshwari to everyone:    5:44 PM
+import java.util.LinkedList;
+public class Demo5LL {
+public static void main(String[] args) {
+    LinkedList< String> list = new LinkedList<String>();
+    list.add("Scott");
+    list.add("Allen");
+    list.add("blake");
+    System.out.println(list);
+    list.forEach((s)->{System.out.println(s);});
+}
+}
+
+from Sureka Rajeshwari to everyone:    5:44 PM
+@FunctionalInterface
+public interface TestInterface {
+    public int add(int x,int y);
+}
+
+from Sureka Rajeshwari to everyone:    5:44 PM
+
+public class Demo4LambdaExpression {
+    public static void main(String[] args) {
+        TestInterface ob = (a,b)->{    return  (a+b) ;};
+        int res = ob.add(23,45);
+        System.out.println(res);
+    }
+}
+
+from Sureka Rajeshwari to everyone:    5:44 PM
+import java.util.HashSet;
+import java.util.TreeSet;
+public class Demo3HashSet {
+    public static void main(String[] args) {
+        TreeSet<String > set = new TreeSet<String>();
+        set.add("Scott");
+        set.add("Allen");
+        set.add("Blake");
+        set.add("Scott");
+        set.add("Allen");
+        System.out.println("Size : "+set.size());
+        System.out.println(set);
+        
+        /*
+         * HashSet<String > set = new HashSet<String>(); set.add("Scott");
+         * set.add("Allen"); set.add("Blake"); set.add("Scott"); set.add("Allen");
+         * System.out.println("Size : "+set.size()); System.out.println(set);
+         */
+    }
+}
+
+from Suman Saha to everyone:    5:44 PM
+vector
+from Sureka Rajeshwari to everyone:    5:45 PM
+import java.util.Vector;
+public class Demo1LVector {
+    public static void main(String[] args) {
+        Vector vec = new Vector();
+        vec.addElement("sam");
+        vec.addElement(202);
+        vec.addElement(true);
+        System.out.println(vec.size());
+        vec.addElement("Wipro");
+        System.out.println(vec.size());
+    }
+}
+
+from Sureka Rajeshwari to everyone:    5:45 PM
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+public class Demo1ArrayList {
+    public static void main(String[] args) {
+        List<Integer> lt = new ArrayList<Integer>();
+        lt.add(20);
+        lt.add(30);
+        lt.add(10);
+        lt.add(40);
+        System.out.println(lt);
+        int sum=0;
+        for(int ele : lt) {
+            System.out.println(ele);
+            sum=sum+ele;
+        }
+        System.out.println("Added value = "+sum);
+        Iterator<Integer> itr = lt.iterator();
+        while(itr.hasNext()) {
+            int x = itr.next();
+            System.out.println(x);
+            if(x < 20)
+                itr.remove();
+        }
+        System.out.println(lt);
+        //lambda Expression : Simillar to function pointer / anonymous function
+        /*void myfn(int e) {
+            System.out.println(e);
+        }*/
+from Sureka Rajeshwari to everyone:    5:45 PM
+/**
+         * return type -- NA
+         * function name -- NA Anonymous functions
+         * () input parameters -- yes but without data types
+         * -> -- symbol here :  its a lambda expression
+         * {} -- function body : yes
+         * lambda expression can be stored / passed to a variable [of type function]
+         * variable here is a functional Interface -- interface with exactly one abstract method
+         */
+        System.out.println("Using Lambda Expression");
+        lt.forEach((ele)->{System.out.println(ele);});
+        //lt.forEach(action);
+    }
+}
+
+public class Demo7Enum {
+    enum weekdays { Mon , Tue, Wed, Thru, Fri }
+public static void main(String[] args) {
+    for( weekdays day : weekdays.values()) {
+        System.out.println(day);
+    }
+    System.out.println(weekdays.valueOf("Tue"));
+    System.out.println(weekdays.valueOf("Tue").ordinal());
+    
+}
+}
+
+public class Demo1GC {
+    public static int counter = 0;
+    public Demo1GC() {
+        counter++;
+        System.out.println("Object Created : "+ counter);
+    }
+    public void finalize() {
+        counter--;
+        System.out.println("Object Desctructed : "+ counter);
+    }
+    
+    public static void main(String[] args) {
+        for(int i=0;i<3;i++) {
+            Demo1GC ob = new Demo1GC();
+        }
+        //System.out.println(ob);
+        Runtime.getRuntime().gc();
+        System.out.println("App Terminated");
+    }
+}
+
+    int cnt=0;
+        for(int i=input1 ; i <=input2;i++){
+            System.out.print(i+ " : ");
+            if(isPrime(i))
+            {
+                System.out.println("True");
+                cnt++;
+            }
+            System.out.println();
+        }
+        System.out.println(cnt);
+        return cnt;
+    }
+    boolean isPrime(int num){
+        if(num==2)
+             return true;
+        for(int i=2;i<=(num/2+1);i++){
+            if(num%i ==0)
+            return false;
+        }
+        return true;
+    }
