@@ -43,7 +43,7 @@
             "type": "shell",
             "command": "javac -g -sourcepath ./**/*.java -d ./bin"
         },
-        {
+        /* {
             "label": "g++ build and debug active file",
             "type": "cppdbg",
             "request": "launch",
@@ -63,7 +63,7 @@
             ],
             "preLaunchTask": "g++ build active file",
             "miDebuggerPath": "/usr/bin/gdb"
-          }
+          } */
         {
             "label": "debug-attach",
             "type": "shell",
