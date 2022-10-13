@@ -1,10 +1,11 @@
-from Excel_Macro_Run import ETR,ZCOP,FSZCOP
-from Zcop_Report import weekly_zcop,daily_zcop,churn_zcop
-from AIR_ZCOP_file import AIR
-import tkinter as tk
-from tkinter import Label, Radiobutton, Button, mainloop, IntVar, W
-from tkinter import messagebox
 import time
+import tkinter as tk
+from tkinter import Button, IntVar, Label, Radiobutton, W, mainloop, messagebox
+
+from AIR_ZCOP_file import AIR
+from Excel_Macro_Run import ETR, FSZCOP, ZCOP
+from Zcop_Report import churn_zcop, daily_zcop, weekly_zcop
+
 
 def printName(x):
 	str = "Your name is {}"
