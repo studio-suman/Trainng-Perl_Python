@@ -4,7 +4,7 @@
   "description": "node server",
   "main": "index.js",
   "scripts": {
-    "start": "node server.bundle.js",
+    "start": "node server.js",
     "build": "webpack",
     "dev": "nodemon ./server.js localhost 3080",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,6 +18,7 @@
     "del": "^7.0.0",
     "express": "^4.18.2",
     "fancy-log": "^2.0.0",
+    "gulp": "^4.0.2",
     "gulp-zip": "^5.1.0",
     "nodemon": "^2.0.20",
     "sql": "^0.78.0",
@@ -26,7 +27,6 @@
     "webpack-stream": "^7.0.0"
   },
   "devDependencies": {
-    "gulp": "^4.0.2",
     "webpack-cli": "^4.10.0"
   }
 }
