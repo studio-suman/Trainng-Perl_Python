@@ -1,5 +1,5 @@
 import { src, dest, series, parallel } from 'gulp'
-import del from 'del'
+//import { del } from 'del'
 import { existsSync, mkdirSync } from 'fs'
 import zip from 'gulp-zip'
 import log from 'fancy-log'
@@ -16,10 +16,10 @@ const paths = {
     zipped_file_name: 'angular-nodejs.zip'
 }
 
-function clean() {
+/* function clean() {
     log('removing the old files in the directory')
     return del('prod-build/**',{force:true})
-}
+} */
 
 function createProdBuildFolder() {
     const dir = paths.prod_build
@@ -60,7 +60,7 @@ function zippingTask() {
 }
 
 const _default = series(
-    clean,
+    //clean,
     createProdBuildFolder,
     buildAngularCodeTask,
     parallel(copyAngularCodeTask, copyNodeJSCodeTask),
