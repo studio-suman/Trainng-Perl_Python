@@ -4,13 +4,15 @@ import { ModalComponent } from './modal/modal.component';
 import { ModalService } from '../services/modal.service';
 import { TabsContainerComponent } from './tabs-container/tabs-container.component';
 import { TabComponent } from './tab/tab.component';
+import { AlertComponent } from './alert/alert.component';
 
 
 @NgModule({
   declarations: [
     ModalComponent,
     TabsContainerComponent,
-    TabComponent
+    TabComponent,
+    AlertComponent
   ],
   imports: [
     CommonModule
@@ -18,7 +20,8 @@ import { TabComponent } from './tab/tab.component';
   exports: [
     ModalComponent,
     TabsContainerComponent,
-    TabComponent
+    TabComponent,
+    AlertComponent
   ],
   providers: [ModalService]
 })
