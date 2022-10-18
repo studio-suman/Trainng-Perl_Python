@@ -21,10 +21,16 @@ export class NavComponent implements OnInit {
   ngOnInit(): void {
   }
  
+  logout($event:Event) {
+    $event.preventDefault()
+    this.auth.logout();
+  }
+
   openModal($event: Event) {
     $event.preventDefault()
 
     this.modal.toggleModal('auth')
   }
 
+  userinfo = "Suman Saha"
 }

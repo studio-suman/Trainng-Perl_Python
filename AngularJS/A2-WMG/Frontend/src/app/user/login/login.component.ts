@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { NgForm, NG_ASYNC_VALIDATORS, Validators } from '@angular/forms';
+
 
 @Component({
   selector: 'app-login',

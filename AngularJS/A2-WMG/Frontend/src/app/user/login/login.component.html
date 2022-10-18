@@ -25,8 +25,10 @@
         placeholder="Password" />
         <p class ="text-red-400" *ngIf="password.dirty && password.touched && password.errors">Invalid Password</p> 
     </div>
+    <!-- [disabled]="loginForm.invalid || inSubmission" -->
     <button type="submit" 
-      [disabled]="loginForm.invalid || inSubmission"
+      
+      [disabled]="inSubmission"
       class="block w-full bg-indigo-400 text-white py-1.5 px-3 rounded transition
         hover:bg-indigo-500">
       Submit

@@ -47,5 +47,16 @@ export class AuthService {
       await userCred.user.updateProfile({
         displayName: userData.name,
       })
+
+  }
+
+
+
+
+  logout(){
+    this.auth.signOut()
   }
 }
+
+
+
