@@ -2,11 +2,13 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const { Connection, Request } = require("tedious");
+const { urlencoded } = require('body-parser');
 
 const app = express()
 
 app.use(cors())
 app.use(bodyParser.json())
+app.use(urlencoded({ extended: true }))
 process.chdir('../')
 app.use(express.static(process.cwd()+"/Frontend/dist/A2-WMG/"))
 

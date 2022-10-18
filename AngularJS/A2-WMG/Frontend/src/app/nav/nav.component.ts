@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalService } from '../services/modal.service';
 import { AuthService } from '../services/auth.service';
+import { AngularFireModule } from '@angular/fire/compat';
 
 
 @Component({
@@ -10,6 +11,7 @@ import { AuthService } from '../services/auth.service';
 })
 export class NavComponent implements OnInit {
 
+  
 
   constructor(
     public modal: ModalService,
@@ -18,7 +20,14 @@ export class NavComponent implements OnInit {
 
     }
 
+    user: any
+
   ngOnInit(): void {
+    this.auth.getUserState().subscribe (
+      user => {
+        this.user = user
+      }
+    )
   }
  
   logout($event:Event) {
@@ -32,5 +41,4 @@ export class NavComponent implements OnInit {
     this.modal.toggleModal('auth')
   }
 
-  userinfo = "Suman Saha"
 }

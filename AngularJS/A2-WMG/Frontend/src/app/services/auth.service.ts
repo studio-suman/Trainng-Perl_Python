@@ -13,6 +13,9 @@ export class AuthService {
   private userCollection: AngularFirestoreCollection<IUser>
   public isAuthenticated$: Observable<boolean>
 
+
+
+
   constructor(
     private auth: AngularFireAuth,
     private db: AngularFirestore
@@ -21,6 +24,10 @@ export class AuthService {
     this.isAuthenticated$ = auth.user.pipe(
       map( user => !!user)
     )
+  }
+
+  getUserState() {
+    return this.auth.authState
   }
 
   public async createUser(userData: IUser) {
@@ -49,8 +56,6 @@ export class AuthService {
       })
 
   }
-
-
 
 
   logout(){
