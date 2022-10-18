@@ -1,25 +1,35 @@
+<app-alert *ngIf="showAlert" [color]="alertColor">
+  {{ alertMsg }}
+</app-alert>
+
 <!-- Login Form -->
-<form>
+<form #loginForm = "ngForm" (ngSubmit)="login()">
     <!-- Email -->
     <div class="mb-3">
       <label class="inline-block mb-2">Email</label>
-      <input type="email"
+      <input #email="ngModel" type="email" name="email" [(ngModel)] = "credentials.email"
         class="block w-full py-1.5 px-3 text-gray-200 border border-gray-400 transition
           duration-500 focus:outline-none rounded bg-transparent
           focus:border-indigo-400"
-        placeholder="Enter Email" />
+        placeholder="Enter Email" required 
+        pattern="
+        ^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$"/>
+      <p class ="text-red-400" *ngIf="email.dirty && email.touched && email.errors">Invalid Email</p> 
     </div>
     <!-- Password -->
     <div class="mb-3">
       <label class="inline-block mb-2">Password</label>
-      <input type="password"
+      <input type="password" name="password" [(ngModel)] = "credentials.password" required #password="ngModel"
         class="block w-full py-1.5 px-3 text-gray-200 border border-gray-400 transition
         duration-500 focus:outline-none rounded bg-transparent focus:border-indigo-400"
         placeholder="Password" />
+        <p class ="text-red-400" *ngIf="password.dirty && password.touched && password.errors">Invalid Password</p> 
     </div>
-    <button type="submit"
+    <button type="submit" 
+      [disabled]="loginForm.invalid || inSubmission"
       class="block w-full bg-indigo-400 text-white py-1.5 px-3 rounded transition
         hover:bg-indigo-500">
       Submit
     </button>
   </form>
+  
