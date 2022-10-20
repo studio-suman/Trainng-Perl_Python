@@ -1,8 +1,9 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const { Connection, Request } = require("tedious");
 const { urlencoded } = require('body-parser');
+const connection = require('./connection')
+const userRoute = require('./routes/user')
 
 const app = express()
 
@@ -12,38 +13,9 @@ app.use(urlencoded({ extended: true }))
 process.chdir('../')
 app.use(express.static(process.cwd()+"/Frontend/dist/A2-WMG/"))
 
-//database connection
+app.use('/user',userRoute)
 
-// Create connection to database
-const config = {
-    authentication: {
-      options: {
-        userName: "db", // update me
-        password: "welcome@123" // update me
-      },
-      type: "default"
-    },
-    server: "mis-db.database.windows.net", // update me
-    options: {
-      database: "MIS_DB", //update me
-      encrypt: true
-    }
-  };
 
-  
-  const connection = new Connection(config);
-  
-  // Attempt to connect and execute queries if connection goes through
-  connection.on("connect", err => {
-    if (err) {
-      console.error(err.message);
-    } else {
-        console.log('Connected to MIS_DB...');
-    }
-    //connection.close();
-  });
-  
-  connection.connect();
   
   function queryDatabase() {
     console.log("Reading rows from the Table...");
@@ -69,7 +41,7 @@ const config = {
     connection.execSql(request);
   }
 
-  app.get('/user',(req,res)=>{
+  app.get('/user1',(req,res)=>{
 
     req.sql("select * from [dbo].[scott.emp]").into(res)
     

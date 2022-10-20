@@ -41,4 +41,6 @@ export class NavComponent implements OnInit {
     this.modal.toggleModal('auth')
   }
 
+  userinfo = "Suman Saha"
+
 }

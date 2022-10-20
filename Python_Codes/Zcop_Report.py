@@ -1,13 +1,13 @@
-import pandas as pd
-import numpy as np
-import openpyxl
-import pandas.io.formats.excel
-import sys
-import time
 import gzip
 import os.path
 import shutil
+import sys
+import time
 
+import numpy as np
+import openpyxl
+import pandas as pd
+import pandas.io.formats.excel
 
 #infile =  r"C:\Users\HSASS\OneDrive - Wipro\Desktop\ZCOP_REPORT_DAY.csv"
 infile = r"C:\Users\HSASS\Downloads\ZCOP Daily "+ time.strftime("%d%b%y") + ".csv"
