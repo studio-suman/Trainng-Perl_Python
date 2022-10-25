@@ -11,9 +11,9 @@ create table users (
 insert into users
     (ID,name,contactNumber,email,password,status,role)
 values
-    (2 ,'Sangeeta Saha' ,55555555 ,'sangeeta.25.@gmail.com','sangeetasaha1' ,'true','user')
+    (3 ,'Subrata Sarkar' ,55555555 ,'subrata.sarkar4@gmail.com','subratasarkar1' ,'true','user')
 
-update users set status = 'true' where id = 1;
+update users set contactNumber = '77777777' where id = 3
 
 select * from users
 
