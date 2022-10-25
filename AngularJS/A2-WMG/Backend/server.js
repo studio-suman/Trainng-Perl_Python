@@ -1,9 +1,12 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const { urlencoded } = require('body-parser');
-const connection = require('./connection')
-const userRoute = require('./routes/user')
+const { urlencoded } = require('body-parser')
+var userDb = require('./user')
+const connection = require('./dbConfig')
+const dbOperations = require('./routes/dbOperations')
+const { request, response } = require('express')
+var router = express.Router()
 
 const app = express()
 
@@ -13,44 +16,31 @@ app.use(urlencoded({ extended: true }))
 process.chdir('../')
 app.use(express.static(process.cwd()+"/Frontend/dist/A2-WMG/"))
 
-app.use('/user',userRoute)
+app.use('/api', router)
 
 
-  
-  function queryDatabase() {
-    console.log("Reading rows from the Table...");
-  
-    // Read all rows from table
-    const request = new Request(
-      `select * from [dbo].[scott.emp]`,
-      (err, rowCount) => {
-        if (err) {
-          console.error(err.message);
-        } else {
-          console.log(`${rowCount} row(s) returned`);
-        }
-      }
-    );
-  
-    request.on("row", columns => {
-      columns.forEach(column => {
-        console.log("%s\t%s", column.metadata.colName, column.value);
-      });
-    });
-  
-    connection.execSql(request);
-  }
+router.use((request,response,next) => {
+  console.log('middleware')
+  next()
+})
 
-  app.get('/user1',(req,res)=>{
+router.route("/users").get((req,res) => {
+  dbOperations.getData_withQuery().then((result => {
+    console.log(result)
+    res.json(result[0])
+  }))
 
-    req.sql("select * from [dbo].[scott.emp]").into(res)
-    
-  })
+
+})
+
+
+
+
 process.chdir('../')
 app.get('/',(req,res) => {
   res.sendFile(process.cwd()+"/Frontend/dist/A2-WMG/index.html")
 })
 
 app.listen(3080,()=>{
-    console.log('server running...')
+    console.log('server & api running...')
 })

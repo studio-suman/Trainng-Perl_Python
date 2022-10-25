@@ -1,16 +1,4 @@
-const { Connection, Request } = require("tedious");
-
-class Order {
-    constructor(id,name,contactNumber,email,password,status,role) {
-        this.id = id;
-        this.name = name;
-        this.contactNumber = contactNumber;
-        this.email = email;
-        this.password = password;
-        this.status = status;
-        this.status = role;    
-    }
-}
+//const { Connection, Request } = require("tedious");
 
 // Create connection to database
 const config = {
@@ -23,12 +11,12 @@ const config = {
     },
     server: "mis-db.database.windows.net", // update me
     options: {
-      database: "MIS_DB", //update me
+      database: 'MIS_DB', //update me
       encrypt: true
     }
   };
 
-  const connection = new Connection(config);
+/*   const connection = new Connection(config);
   
   // Attempt to connect and execute queries if connection goes through
   connection.on("connect", err => {
@@ -40,6 +28,6 @@ const config = {
     //connection.close();
   });
   
-  connection.connect();
+  connection.connect(); */
 
-  module.exports = connection
+  module.exports = config
