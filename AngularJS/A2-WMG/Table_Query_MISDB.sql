@@ -15,6 +15,15 @@ values
 
 update users set contactNumber = '77777777' where id = 3
 
-select * from users
+select * from [dbo].[users]
 
 drop table users
+
+SELECT sp.name
+    , sp.default_database_name
+FROM sys.server_principals sp
+WHERE sp.name = SUSER_SNAME();
+
+ALTER LOGIN db WITH DEFAULT_DATABASE = [MIS_DB];
+
+Select * from sys.sysdatabases

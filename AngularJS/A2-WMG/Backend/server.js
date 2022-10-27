@@ -25,14 +25,18 @@ router.use((request,response,next) => {
 })
 
 router.route("/users").get((req,res) => {
-  dbOperations.getData_withQuery().then((result => {
-    console.log(result)
-    res.json(result[0])
+  dbOperations.getData().then((result => {
+    console.log('this value ' +result)
+    res.json(result)
   }))
-
-
 })
 
+router.route("/users/:id").get((req,res) => {
+  dbOperations.getData_withQuery(req.params.id).then((result => {
+    console.log('this value ' +result)
+    res.json(result[0])
+  }))
+})
 
 
 
