@@ -21,3 +21,7 @@ GRANT EXECUTE ON SCHEMA :: dbo TO db_u;
 
 EXEC sp_addrolemember 'db_datawriter', 'db_u';
 GO
+
+DROP LOGIN [db_u]
+GO
+

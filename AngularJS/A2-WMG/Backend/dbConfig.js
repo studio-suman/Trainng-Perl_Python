@@ -1,18 +1,15 @@
 //const { Connection, Request } = require("tedious");
 
 // Create connection to database
-const config = {
-    authentication: {
-      options: {
-        userName: "db", // update me
-        password: "welcome@123" // update me
-      },
-      type: "default"
-    },
-    server: "mis-db.database.windows.net", // update me
-    options: {
-      database: 'MIS_DB', //update me
-      encrypt: true
+  const config = {
+        user: "api_user", // update me
+        password: "welcome@123", // update me
+        server: "mis-db.database.windows.net", // update me
+        database: "MIS_DB", //update me
+    options: { 
+      encrypt: true,
+      enableArithAbort: false,
+      //type: "default"
     }
   };
 

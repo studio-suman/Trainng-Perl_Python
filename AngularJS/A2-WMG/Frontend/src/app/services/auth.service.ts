@@ -13,9 +13,6 @@ export class AuthService {
   private userCollection: AngularFirestoreCollection<IUser>
   public isAuthenticated$: Observable<boolean>
 
-
-
-
   constructor(
     private auth: AngularFireAuth,
     private db: AngularFirestore
