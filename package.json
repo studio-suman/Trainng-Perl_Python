@@ -5,5 +5,8 @@
     "gulp": "^4.0.2",
     "gulp-zip": "^5.1.0",
     "webpack-stream": "^7.0.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.74.0"
   }
 }

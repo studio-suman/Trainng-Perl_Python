@@ -1,9 +1,12 @@
 const { src, dest, series, parallel } = require('gulp')
+const path = require("path")
+const gulp = require("gulp")
 //const del =  require('del')
 const { existsSync, mkdirSync } =  require('fs')
 const zip = require('gulp-zip')
 const log =require('fancy-log')
 const webpack_stream = require('webpack-stream')
+const webpack = require('webpack')
 const { webpack_config } = require('./Backend/webpack.config.js')
 
 const { exec } = require('child_process')
@@ -46,10 +49,22 @@ function copyAngularCodeTask() {
            .pipe(dest(`${paths.angular_dist}`))
 }
 
+
+
 function copyNodeJSCodeTask() {
     log('building and copying server code into the directory')
-    return webpack_stream(webpack_config)
-           .pipe(dest(`${paths.prod_build}`))
+    return gulp
+        .src(['Backend/chunk.js'])
+        .pipe(webpack_stream({
+            entry: './Backend/server.js',
+            mode: 'production',
+            target: 'node',
+            output: {
+                path: path.resolve(__dirname,'js'),
+                filename: 'server.bundle.js'
+            },
+        }))
+        .pipe(dest(`${paths.prod_build}`))
 }
 
 function zippingTask() {
@@ -61,10 +76,9 @@ function zippingTask() {
 
 exports.default = series(
     //clean,
-    //createProdBuildFolder,
-    //buildAngularCodeTask,
-    copyNodeJSCodeTask
-    //copyAngularCodeTask
-    //zippingTask
+    createProdBuildFolder,
+    buildAngularCodeTask,
+    parallel(copyNodeJSCodeTask,copyAngularCodeTask),
+    zippingTask
 )
 

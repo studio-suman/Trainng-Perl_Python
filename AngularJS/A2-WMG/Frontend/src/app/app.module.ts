@@ -10,13 +10,15 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { environment } from 'src/environments/environment.prod';
+import { BodyPrimaryComponent } from './body-primary/body-primary.component';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavComponent
+    NavComponent,
+    BodyPrimaryComponent
   ],
   imports: [
     BrowserModule,
