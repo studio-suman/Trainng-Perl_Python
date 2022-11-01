@@ -1,7 +1,7 @@
-
-import sys
 import socket
+import sys
 from typing import cast
+
 import termcolor
 
 

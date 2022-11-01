@@ -50,10 +50,23 @@ async function addUser(userDb) {
     }
 }
 
+async function deleteUser(userId){
+    try {
+        let pool = await sql.connect(config)
+        console.log("sql server connected..")
+        let res = await pool.request()
+                .input('input_param',sql.Int, userId)
+                .query(`Delete from users where id = @input_param`)
+        return res.recordsets
+    } catch (info) {
+        console.log("sql connectivity error " + info)
+    }
+}
+
 
 module.exports = {
     getData: getData,
     getData_withQuery: getData_withQuery,
     addUser: addUser,
-
+    deleteUser: deleteUser,
 }

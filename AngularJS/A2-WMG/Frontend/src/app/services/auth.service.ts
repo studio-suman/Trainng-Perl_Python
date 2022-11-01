@@ -4,10 +4,13 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/comp
 import { Observable } from 'rxjs';
 import IUser from 'src/app/models/user.models';
 import { map } from "rxjs/operators";
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class AuthService {
 
   private userCollection: AngularFirestoreCollection<IUser>
@@ -15,13 +18,16 @@ export class AuthService {
 
   constructor(
     private auth: AngularFireAuth,
-    private db: AngularFirestore
+    private db: AngularFirestore,
+    private http: HttpClient
   ) { 
     this.userCollection = db.collection("users")
     this.isAuthenticated$ = auth.user.pipe(
       map( user => !!user)
     )
   }
+
+  baseUrl = '/'
 
   getUserState() {
     return this.auth.authState
@@ -58,6 +64,13 @@ export class AuthService {
   logout(){
     this.auth.signOut()
   }
+
+  getUser() {
+    console.log("accessed api" + this.baseUrl)
+    return this.http.get(this.baseUrl + "/users")
+  }
+
+
 }
 
 

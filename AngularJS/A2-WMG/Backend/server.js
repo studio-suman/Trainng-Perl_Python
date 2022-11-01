@@ -46,6 +46,13 @@ router.route("/addUsers").post((req,res) => {
   }))
 })
 
+router.route("/delUsers/:id").get((req,res) => {
+  dbOperations.deleteUser(req.params.id).then((result => {
+    console.log('this value ' +'Record Deleted Successfully')
+    res.status(200).json('Record Deleted Successfully')
+  }))
+})
+
 
 process.chdir('../')
 app.get('/',(req,res) => {

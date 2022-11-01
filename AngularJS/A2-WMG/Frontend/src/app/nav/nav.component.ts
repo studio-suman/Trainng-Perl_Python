@@ -41,6 +41,11 @@ export class NavComponent implements OnInit {
     this.modal.toggleModal('auth')
   }
 
+  getUser($event:Event) {
+    $event.preventDefault()
+    this.auth.getUser();
+  }
+
   userinfo = "Suman Saha"
 
 }

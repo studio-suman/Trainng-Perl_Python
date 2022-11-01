@@ -21,7 +21,9 @@ export class LoginComponent implements OnInit {
 
 
 
-  constructor(private auth: AngularFireAuth) { }
+  constructor(
+    private auth: AngularFireAuth,
+    ) { }
 
   ngOnInit(): void {
   }
@@ -32,6 +34,7 @@ export class LoginComponent implements OnInit {
     this.alertColor = 'Blue'
     this.inSubmission = true
     console.log(this.credentials)
+    
 
     try {
       await this.auth.signInWithEmailAndPassword(
