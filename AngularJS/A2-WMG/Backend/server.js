@@ -9,11 +9,13 @@ var router = express.Router()
 
 const app = express()
 
+const port = process.env.PORT || 3080
+
 app.use(cors())
 app.use(bodyParser.json())
 app.use(urlencoded({ extended: true }))
 process.chdir('../')
-app.use(express.static(process.cwd()+"/Frontend/dist/A2-WMG/"))
+app.use(express.static(process.cwd()+"/prod-build/A2-WMG"))
 
 app.use('/api', router)
 
@@ -59,6 +61,6 @@ app.get('/',(req,res) => {
   res.sendFile(process.cwd()+"/Frontend/dist/A2-WMG/index.html")
 })
 
-app.listen(3080,()=>{
+app.listen(port,()=>{
     console.log('server & api running...')
 })

@@ -61,12 +61,12 @@ export class AuthService {
   }
 
 
-  logout(){
+  logout() {
     this.auth.signOut()
   }
 
   getUser() {
-    console.log("accessed api" + this.baseUrl)
+    console.log("accessed api")
     return this.http.get(this.baseUrl + "/users")
   }
 
