@@ -18,13 +18,13 @@ async function getData() {
     }
 }
 
-async function getData_withQuery(userId) {
+async function getData_withQuery(userName) {
     try {
         let pool = await sql.connect(config)
         console.log("sql server connected..")
         let res = await pool.request()
-                .input('input_param',sql.Int, userId)
-                .query(`Select * from users where id = @input_param`)
+                .input('input_param',sql.Int, userName)
+                .query(`Select * from users where name = @input_param`)
         return res.recordsets
     } catch (info) {
         console.log("sql connectivity error " + info)
@@ -36,7 +36,7 @@ async function addUser(userDb) {
         let pool = await sql.connect(config)
         console.log("sql server connected..")
         let res = await pool.request()
-                .input('id',sql.Int, userDb.id)
+                //.input('id',sql.Int, userDb.id)
                 .input('name',sql.NVarChar, userDb.name)
                 .input('contactNumber',sql.NVarChar, userDb.contactNumber)
                 .input('email',sql.NVarChar, userDb.email)
@@ -50,13 +50,32 @@ async function addUser(userDb) {
     }
 }
 
-async function deleteUser(userId){
+async function updateUser(userDb) {
     try {
         let pool = await sql.connect(config)
         console.log("sql server connected..")
         let res = await pool.request()
-                .input('input_param',sql.Int, userId)
-                .query(`Delete from users where id = @input_param`)
+                .input('id',sql.Int, userDb.id)
+                .input('name',sql.NVarChar, userDb.name)
+                .input('contactNumber',sql.NVarChar, userDb.contactNumber)
+                .input('email',sql.NVarChar, userDb.email)
+                .input('password',sql.NVarChar, userDb.password)
+                .input('status',sql.NVarChar, userDb.status)
+                .input('role',sql.NVarChar, userDb.role)
+                .execute('updateUser')
+        return res.recordsets
+    } catch (info) {
+        console.log("sql connectivity error " + info)
+    }
+}
+
+async function deleteUser(userName){
+    try {
+        let pool = await sql.connect(config)
+        console.log("sql server connected..")
+        let res = await pool.request()
+                .input('input_param',sql.NVarChar, userName)
+                .query(`Delete from users where name = @input_param`)
         return res.recordsets
     } catch (info) {
         console.log("sql connectivity error " + info)
@@ -69,4 +88,5 @@ module.exports = {
     getData_withQuery: getData_withQuery,
     addUser: addUser,
     deleteUser: deleteUser,
+    updateUser: updateUser,
 }

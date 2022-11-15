@@ -1,5 +1,5 @@
 create table users (
-    id int primary key,
+    id INT NOT NULL IDENTITY(1,1) primary key,
     name varchar(25),
     contactNumber varchar(20),
     email varchar(250),
@@ -9,9 +9,9 @@ create table users (
 )
 
 insert into users
-    (ID,name,contactNumber,email,password,status,role)
+    (name,contactNumber,email,password,status,role)
 values
-    (3 ,'Subrata Sarkar' ,55555555 ,'subrata.sarkar4@gmail.com','subratasarkar1' ,'true','user')
+    ('Subrata Sarkar' ,55555555 ,'subrata.sarkar4@gmail.com','subratasarkar1' ,'true','user')
 
 update users set contactNumber = '77777777' where id = 3
 

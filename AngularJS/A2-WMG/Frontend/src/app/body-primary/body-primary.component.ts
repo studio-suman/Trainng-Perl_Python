@@ -13,6 +13,7 @@ export class BodyPrimaryComponent implements OnInit {
   ) { }
 
   user: any
+  readuser: any
 
   ngOnInit(): void {
     this.auth.getUserState().subscribe (
@@ -20,6 +21,13 @@ export class BodyPrimaryComponent implements OnInit {
         this.user = user
       }
     )
+    this.auth.getUser().subscribe((res)=> {
+      console.log(res,"res=")
+
+      this.readuser = res.data
+      console.log(this.readuser)
+
+    })
   }
 
   

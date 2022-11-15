@@ -27,7 +27,7 @@ export class AuthService {
     )
   }
 
-  baseUrl = '/'
+  baseUrl = 'http://localhost:4200/api'
 
   getUserState() {
     return this.auth.authState
@@ -65,7 +65,8 @@ export class AuthService {
     this.auth.signOut()
   }
 
-  getUser() {
+ //Getting Data from API 
+  getUser(): Observable<any> {
     console.log("accessed api")
     return this.http.get(this.baseUrl + "/users")
   }

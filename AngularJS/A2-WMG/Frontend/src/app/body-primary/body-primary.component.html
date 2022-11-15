@@ -3,8 +3,9 @@
   <section class="container mx-auto">
     <h1 class="uppercase text-center text-4xl grid mt-20 mb-12 items-center gap-8 tracking-widest latest">Latest</h1>
 
+  <ng-container>
     <!-- Clips List -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4" *ngFor="let us of readuser">
       <a href="#"
         class="mt-6 rounded-tl-2xl rounded-br-2xl shadow-xl bg-secondary transform hover:-translate-y-2 hover:shadow-2xl transition duration-300">
   
@@ -33,8 +34,8 @@
 
           <!-- Name & Date -->
           <p class="mb-0">
-            Luis Ramirez &#183; 
-            <span class="text-gray-400">March 31, 2020</span>
+            Luis Ramirez {{us.name}} &#183; 
+            <span class="text-gray-400">March 31, 2020 {{us.contactnumber}}</span>
           </p>
   
         </div>
@@ -42,5 +43,5 @@
       </a>
       
     </div>
-    
+  </ng-container> 
   </section>
