@@ -1,6 +1,7 @@
 {
-    //"jupyter.jupyterServerType": "local",
+    "jupyter.jupyterServerType": "local",
     //"python.pythonPath": "C:\\Ananconda3\\envs\\stats_env\\python.exe",
+    "python.terminal.activateEnvironment": true,
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
         "Core_Java/junit-4.13.2.jar"
@@ -8,7 +9,7 @@
     "python.analysis.completeFunctionParens": true,
     "python.autoComplete.addBrackets": true,
     "python.terminal.activateEnvInCurrentTerminal": true,
-    "vsintellicode.features.python.deepLearning": "enabled",
+    "vsintellicode.features.python.deepLearning": "default",
     "git.ignoreLimitWarning": true,
     "git.path": "C:\\Users\\HSASS\\AppData\\Local\\Programs\\Git\\bin\\git.exe",
     "python.analysis.typeCheckingMode": "basic",

@@ -22,7 +22,6 @@ export class BodyPrimaryComponent implements OnInit {
       }
     )
     this.auth.getUser().subscribe((res)=> {
-      console.log(res,"res=")
 
       this.readuser = res.data
       console.log(this.readuser)

@@ -39,7 +39,7 @@ constructor(
     ])
     phoneNumber= new FormControl('',[
       Validators.required,
-      Validators.minLength(13),
+      Validators.minLength(10),
       Validators.maxLength(13)
     ])
   

@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth'
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { Observable } from 'rxjs';
 import IUser from 'src/app/models/user.models';
-import { map } from "rxjs/operators";
+import { map }  from "rxjs/operators";
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -66,6 +66,7 @@ export class AuthService {
   }
 
  //Getting Data from API 
+ //getUser(): Observable<any>
   getUser(): Observable<any> {
     console.log("accessed api")
     return this.http.get(this.baseUrl + "/users")
