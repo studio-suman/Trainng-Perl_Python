@@ -24,14 +24,14 @@ def weekly_zcop():
 		
 	starttime=time.time()
 	#pd.read_csv("C:\Users\hsass\Desktop\ZCOP_REPORT_DAY.csv",low_memory = False)
-	data1 = pd.read_csv(infile,usecols=["EMP_CODE","CAREER_BAND","BULGE","LOCATION","DATE_OF_JOINING","SMU","EXPERIENCE","BILLABILITY_STATUS","SECTOR","GROUP_CUSTOMER_NAME","FRESHER_ENGAGEMENT_FLAG","DERIVED_SUITE_ID","DERIVED_SUITE_NAME","CUST_NAME","LOAD_DATE","DERIVED_EMP_CITY","FRESHER_INDEX","TM_EMP_NO","EMPLOYEE_EMAIL_ID","PM_ID","COMPANY_IDENTIFICATION_FG","ONS_OFF_FLAG"], engine='python',sep=',', quotechar='"', error_bad_lines=False) [["EMP_CODE","CAREER_BAND","BULGE","LOCATION","DATE_OF_JOINING","SMU","EXPERIENCE","BILLABILITY_STATUS","SECTOR","GROUP_CUSTOMER_NAME","FRESHER_ENGAGEMENT_FLAG","DERIVED_SUITE_ID","DERIVED_SUITE_NAME","CUST_NAME","LOAD_DATE","DERIVED_EMP_CITY","FRESHER_INDEX","TM_EMP_NO","EMPLOYEE_EMAIL_ID","PM_ID","COMPANY_IDENTIFICATION_FG","ONS_OFF_FLAG"]]
+	data1 = pd.read_csv(infile,usecols=["EMP_CODE","CAREER_BAND","BULGE","LOCATION","DATE_OF_JOINING","SMU","EXPERIENCE","BILLABILITY_STATUS","SECTOR","GROUP_CUSTOMER_NAME","FRESHER_ENGAGEMENT_FLAG","DERIVED_SUITE_ID","DERIVED_SUITE_NAME","CUST_NAME","LOAD_DATE","DERIVED_EMP_CITY","FRESHER_INDEX","TM_EMP_NO","EMPLOYEE_EMAIL_ID","PM_ID","COMPANY_IDENTIFICATION_FG","ONS_OFF_FLAG"], engine='python',sep=',', quotechar='"') [["EMP_CODE","CAREER_BAND","BULGE","LOCATION","DATE_OF_JOINING","SMU","EXPERIENCE","BILLABILITY_STATUS","SECTOR","GROUP_CUSTOMER_NAME","FRESHER_ENGAGEMENT_FLAG","DERIVED_SUITE_ID","DERIVED_SUITE_NAME","CUST_NAME","LOAD_DATE","DERIVED_EMP_CITY","FRESHER_INDEX","TM_EMP_NO","EMPLOYEE_EMAIL_ID","PM_ID","COMPANY_IDENTIFICATION_FG","ONS_OFF_FLAG"]]
 
 
 
 	data1['DATE_OF_JOINING'] = data1['DATE_OF_JOINING'].astype('datetime64[ns]') 
 
 
-	data2 = pd.read_csv(infile,usecols=["EMP_CODE","ONSITE_DAYS","OFFSHORE_DAYS","ONSITE_BILLABLE_DAYS","OFFSHORE_BILLABLE_DAYS","ONSITE_NONBILLABLE_DAYS","OFFSHORE_NONBILLABLE_DAYS","ONSITE_SERVICE_DAYS","OFFSHORE_SERVICE_DAYS","ONSITE_FREE_DAYS","OFFSHORE_FREE_DAYS","SMU"], engine='python',sep=',', quotechar='"', error_bad_lines=False)
+	data2 = pd.read_csv(infile,usecols=["EMP_CODE","ONSITE_DAYS","OFFSHORE_DAYS","ONSITE_BILLABLE_DAYS","OFFSHORE_BILLABLE_DAYS","ONSITE_NONBILLABLE_DAYS","OFFSHORE_NONBILLABLE_DAYS","ONSITE_SERVICE_DAYS","OFFSHORE_SERVICE_DAYS","ONSITE_FREE_DAYS","OFFSHORE_FREE_DAYS","SMU"], engine='python',sep=',', quotechar='"')
 	data2["Total Billed"]= data2["ONSITE_BILLABLE_DAYS"] + data2["OFFSHORE_BILLABLE_DAYS"]
 	data2["TotalSupport"]= data2["ONSITE_SERVICE_DAYS"] + data2["OFFSHORE_SERVICE_DAYS"]
 	data2["TotalVNB"]= data2["ONSITE_NONBILLABLE_DAYS"] + data2["OFFSHORE_NONBILLABLE_DAYS"]
@@ -50,7 +50,7 @@ def weekly_zcop():
 	table2["TotalXFree"]= table2["ONSITE_FREE_DAYS"] + table2["OFFSHORE_FREE_DAYS"]
 
 		
-	df23 = pd.pivot_table(data2,index=["EMP_CODE"],values =['YStatus','Total Billed','TotalSupport','TotalVNB','TotalXFree'],aggfunc='first')
+	df23 = pd.pivot_table(data2,index=["EMP_CODE"],values =['YStatus','Total Billed','TotalSupport','TotalVNB','TotalXFree'],aggfunc='first')  # type: ignore
 	df23.loc['Total Billed']= df23.sum(numeric_only=True, axis=0)
 
 
@@ -58,9 +58,10 @@ def weekly_zcop():
 	 
 
 		
-	writer = pd.ExcelWriter(outfilew,engine ='xlsxwriter')  
-
-	data1.to_excel(writer, sheet_name ="ZCOP",startcol = 14,startrow = 0)
+	with pd.ExcelWriter(
+		outfilew,engine ='xlsxwriter'  # type: ignore
+		) as writer:
+		data1.to_excel(writer, sheet_name ="ZCOP",startcol = 14,startrow = 0)
 
 	workbook = writer.book
 	worksheet = writer.sheets["ZCOP"]
@@ -74,7 +75,7 @@ def weekly_zcop():
 	worksheet.set_column('I:M', 10)
 	worksheet.set_column('P:AD', 10)
 		
-	writer.save()
+	writer.save()  # type: ignore
 	time_calc(starttime)
 	
 	
@@ -91,13 +92,13 @@ def daily_zcop():
 	#"GROUP_CUSTOMER_ID","GROUP_CUSTOMER_NAME","ROLE_DESCRIPTION","COMPANY_IDENTIFICATION_FG"], engine='python',sep=',', quotechar='"', error_bad_lines=False) 
 	#[["EMP_CODE","SMU","SECTOR","CUST_NAME","BILLABILITY_STATUS","INVESTMENT_FLAG","EMP_NAME","LOCATION","CAREER_BAND","DERIVED_EMP_CITY","DERIVED_EMP_COUNTRY","ONS_OFF_FLAG","SERVICE_LINE","PRACTICE","TALENT_IDENTIFICATION","GROUP_CUSTOMER_ID","GROUP_CUSTOMER_NAME","ROLE_DESCRIPTION","COMPANY_IDENTIFICATION_FG"]]
 
-	data = pd.read_csv(infile, engine='python',sep=',', quotechar='"', error_bad_lines=False) 
+	data = pd.read_csv(infile, engine='python',sep=',', quotechar='"') 
 	
 	data = data[['EMP_CODE','SMU','SECTOR','CUST_NAME','BILLABILITY_STATUS','APPROVED_INVESTMENT','EMP_NAME','LOCATION','CAREER_BAND','DERIVED_EMP_CITY','DERIVED_EMP_COUNTRY','ONS_OFF_FLAG','SERVICE_LINE','PRACTICE','TALENT_IDENTIFICATION',
 	'GROUP_CUSTOMER_ID','GROUP_CUSTOMER_NAME','ROLE_DESCRIPTION','COMPANY_IDENTIFICATION_FG','BILLABILITY_STATUS_NEW','EXECUTION_HUB']]
 
-	mapping = pd.read_csv(skillFile,usecols=["EMP_CODE","PROJECT_ACQUIRED_SKILLS","PRIMARY_SKILL","ROLE_ID","ROLE_DESCRIPTION"],engine='python',sep=',', quotechar='"', error_bad_lines=False)
-	[["EMP_CODE","PROJECT_ACQUIRED_SKILLS","PRIMARY_SKILL","ROLE_ID","ROLE_DESCRIPTION"]]
+	mapping = pd.read_csv(skillFile,usecols=["EMP_CODE","PROJECT_ACQUIRED_SKILLS","PRIMARY_SKILL","ROLE_ID","ROLE_DESCRIPTION"],engine='python',sep=',', quotechar='"')[["EMP_CODE","PROJECT_ACQUIRED_SKILLS","PRIMARY_SKILL","ROLE_ID","ROLE_DESCRIPTION"]]
+	
 	#pd.io.formats.excel.header_style = None
 	
 	#mapping = {
@@ -141,7 +142,7 @@ def churn_zcop():
 	#		shutil.copyfileobj(f_in, f_out)
 	#	print("File Extracted!!")
 	
-	data = pd.read_csv(infile, engine='python',sep=',', quotechar='"', error_bad_lines=False) 
+	data = pd.read_csv(infile, engine='python',sep=',', quotechar='"') 
 	
 	data = data[['EMP_CODE','SMU','SECTOR','CUST_NUM','CUST_NAME','PROJECT_CODE','BILLABILITY_STATUS_NEW','EMP_NAME','TM_NAME','CAREER_BAND','LOCATION','GROUP_CUSTOMER_ID','GROUP_CUSTOMER_NAME','FRESHER_INDEX','DERIVED_EMP_COUNTRY','DERIVED_EMP_GEOGRAPHY','ONS_OFF_FLAG','PROJ_COUNTRY','EXECUTION_HUB','COMPANY_IDENTIFICATION_FG']]
 
