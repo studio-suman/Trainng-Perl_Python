@@ -13,6 +13,7 @@ import pandas.io.formats.excel
 infile = r"C:\Users\HSASS\Downloads\ZCOP Daily "+ time.strftime("%d%b%y") + ".csv"
 outfilew = r"C:\Users\HSASS\OneDrive - Wipro\Suman\Data\Manju_Ranga_Reports\Ad Hoc\Zcop_weekly.xlsx"
 outfilec = r"C:\Users\HSASS\OneDrive - Wipro\Desktop\ChurnZCOP_today.csv"
+outfiler = r"C:\Users\HSASS\OneDrive - Wipro\Desktop\RFPZCOP_today.csv"
 outfiled = r"C:\Users\HSASS\OneDrive - Wipro\Desktop\ZCOP_today.csv"   
 skillFile = r"C:\Users\HSASS\Downloads\Employee Skill Details.csv"
 def weekly_zcop():
@@ -155,6 +156,29 @@ def churn_zcop():
 	
 	data.to_csv(outfilec, index=False)
 	time_calc(starttime)
+
+def rfp_zcop():
+
+	starttime=time.time()
+	
+	#with gzip.open(r"C:\Users\HSASS\OneDrive - Wipro\Desktop\ZCOP Daily.csv.gz", 'rb') as f_in:
+	#	with open(r"C:\Users\HSASS\OneDrive - Wipro\Desktop\ZCOP_REPORT_DAY.csv", 'wb') as f_out:
+	#		shutil.copyfileobj(f_in, f_out)
+	#	print("File Extracted!!")
+	
+	data = pd.read_csv(infile, engine='python',sep=',', quotechar='"') 
+	
+	data = data[['EMP_CODE','EMP_NAME','SMU','SECTOR','CUST_NAME','BILLABILITY_STATUS_NEW','TOTAL_DAYS','TM_NAME','CAREER_BAND','LOCATION','DATE_OF_JOINING','EXPERIENCE','ROLE_DESCRIPTION','GROUP_CUSTOMER_ID','GROUP_CUSTOMER_NAME','FRESHER_INDEX','DERIVED_EMP_COUNTRY','DERIVED_EMP_GEOGRAPHY','ONS_OFF_FLAG','EXECUTION_HUB','INVOICE_TYPE','SOW_NO','GBL','GBL_EH','DERIVED_SERVICE_LINE','PRACTICE','TALENT_IDENTIFICATION','PROJECT_PC_TYPE','PRACTICE_PC_TYPE']]
+
+	# Below is dataframe is to prepare for qtr begining Churn
+	#data = data[['EMP_CODE','LOAD_DATE','SMU','SECTOR','CUST_NUM','CUST_NAME','PROJECT_CODE','BILLABILITY_STATUS','TM_NAME','CAREER_BAND','LOCATION','GROUP_CUSTOMER_ID','GROUP_CUSTOMER_NAME','DERIVED_EMP_CITY','DERIVED_EMP_STATE','DERIVED_EMP_COUNTRY','DERIVED_EMP_GEOGRAPHY','ONS_OFF_FLAG','EXECUTION_HUB','MIS_PROP_DATE','MIS_PROP_LVL','MIS_VIS_DATE','MIS_VIS_LVL','HOME_COUNTRY','PROJ_COUNTRY','COMPANY_IDENTIFICATION_FG']]
+
+	
+	data = data.sort_values(by ='SMU',ascending=True)
+	
+	data.to_csv(outfiler, index=False)
+	time_calc(starttime)
+
 
 def time_calc(starttime):	
 	
