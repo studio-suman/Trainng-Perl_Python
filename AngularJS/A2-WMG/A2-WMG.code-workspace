@@ -1,0 +1,10 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"appService.enablePythonRemoteDebugging": true
+	}
+}

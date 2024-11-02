@@ -1,0 +1,105 @@
+# Example configuration.yaml entry
+mqtt:
+  switch:
+    - unique_id: bedroom_switch
+      name: "Bedroom Switch"
+      state_topic: "home/bedroom/switch1"
+      command_topic: "home/bedroom/switch1/set"
+      availability:
+        - topic: "home/bedroom/switch1/available"
+      payload_on: "ON"
+      payload_off: "OFF"
+      state_on: "ON"
+      state_off: "OFF"
+      optimistic: false
+      qos: 0
+      retain: true
+
+#########################################################
+################## New Entry ############################
+
+mqtt:
+  switch:
+    - unique_id: tubelight_switch
+      name: "MQTT TubeLight Switch"
+      state_topic: "/house/switchConfirm1/"
+      command_topic: "/house/switch1/"
+      #availability:
+      #  - topic: "/house/switchConfirm1/available"
+      payload_on: "1"
+      payload_off: "0"
+      state_on: "1"
+      state_off: "0"
+      optimistic: false
+      qos: 0
+      retain: true
+    
+    - unique_id: nightlight_switch
+      name: "MQTT Night Lamp Switch"
+      state_topic: "/house/switchConfirm3/"
+      command_topic: "/house/switch3/"
+      #availability:
+      #  - topic: "/house/switchConfirm3/available"
+      payload_on: "1"
+      payload_off: "0"
+      state_on: "1"
+      state_off: "0"
+      optimistic: false
+      qos: 0
+      retain: true
+    
+    - unique_id: fan_switch
+      name: "MQTT Fan Switch"
+      state_topic: "/house/switchConfirm4/"
+      command_topic: "/house/switch4/"
+      #availability:
+      #  - topic: "/house/switchConfirm4/available"
+      payload_on: "1"
+      payload_off: "0"
+      state_on: "1"
+      state_off: "0"
+      optimistic: false
+      qos: 0
+      retain: true
+    
+    - unique_id: tubelight_switch2
+      name: "MQTT TubeLight Switch2"
+      state_topic: "/house2/switchConfirm1/"
+      command_topic: "/house2/switch1/"
+      #availability:
+      #  - topic: "/house2/switchConfirm1/available"
+      payload_on: "1"
+      payload_off: "0"
+      state_on: "1"
+      state_off: "0"
+      optimistic: false
+      qos: 0
+      retain: true
+    
+    - unique_id: nightlight_switch2
+      name: "MQTT Night Lamp Switch2"
+      state_topic: "/house2/switchConfirm3/"
+      command_topic: "/house2/switch3/"
+      #availability:
+      #  - topic: "/house2/switchConfirm3/available"
+      payload_on: "1"
+      payload_off: "0"
+      state_on: "1"
+      state_off: "0"
+      optimistic: false
+      qos: 0
+      retain: true
+    
+    - unique_id: no_switch
+      name: "MQTT No Switch2"
+      state_topic: "/house2/switchConfirm4/"
+      command_topic: "/house2/switch4/"
+      #availability:
+      #  - topic: "/house2/switchConfirm4/available"
+      payload_on: "1"
+      payload_off: "0"
+      state_on: "1"
+      state_off: "0"
+      optimistic: false
+      qos: 0
+      retain: true

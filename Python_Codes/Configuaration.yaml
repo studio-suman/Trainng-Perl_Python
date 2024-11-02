@@ -1,0 +1,151 @@
+#zone# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Text to speech
+tts:
+  - platform: google_translate
+#themes: !include_dir_merge_named themes
+group: !include groups.yaml
+automation: !include automations.yaml
+#script: !include scripts.yaml
+scene: !include scenes.yaml
+
+homeassistant:
+  customize: !include customize.yaml
+  #external_url: https://hassio-suman.duckdns.org:8123
+  #internal_url: https://192.168.1.15:8123
+
+
+http:
+  base_url: https://hassio-suman.duckdns.org
+  #ssl_certificate: /ssl/fullchain.pem
+  #ssl_key: /ssl/privkey.pem
+  #ip_ban_enabled: true
+  #login_attempts_threshold: 5
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 172.30.32.0/24
+    - 172.30.33.0/24
+  
+# Example configuration.yaml entry
+frontend:
+  themes: !include_dir_merge_named themes
+
+wake_on_lan: # enables `wake_on_lan` integration
+
+sensor:
+  - platform: rest
+    resource: http://localhost:4040/api/tunnels/hsass
+    name: Home Assistant URL
+    value_template: '{{ value_json.public_url }}'
+
+
+discovery:
+
+recorder:
+    db_url:
+     mysql://homeassistant:password@192.168.1.15/homeassistant?charset=utf8
+
+mqtt:
+  discovery: true
+  broker: 192.168.1.15
+  port: 1883
+  username: mqtt_user
+  password: password
+
+switch 1:
+  - platform: mqtt
+    name: "MQTT TubeLight Switch"
+    state_topic: "/house/switchConfirm1/"
+    command_topic: "/house/switch1/"
+    payload_on: "1"
+    payload_off: "0"
+    qos: 0
+    retain: true    
+  
+#switch 2:
+  #- platform: mqtt
+    #name: "MQTT No Switch"
+    #state_topic: "/house/switchConfirm2/"
+    #command_topic: "/house/switch2/"
+    #payload_on: "1"
+    #payload_off: "0"
+    #qos: 0
+    #retain: true    
+
+switch 3:
+  - platform: mqtt
+    name: "MQTT Night Lamp Switch"
+    state_topic: "/house/switchConfirm3/"
+    command_topic: "/house/switch3/"
+    payload_on: "1"
+    payload_off: "0"
+    qos: 0
+    retain: true    
+  
+switch 4:
+  - platform: mqtt
+    name: "MQTT Fan Switch"
+    state_topic: "/house/switchConfirm4/"
+    command_topic: "/house/switch4/"
+    payload_on: "1"
+    payload_off: "0"
+    qos: 0
+    retain: true  
+
+switch 5:
+  - platform: mqtt
+    name: "MQTT TubeLight Switch2"
+    state_topic: "/house2/switchConfirm1/"
+    command_topic: "/house2/switch1/"
+    payload_on: "0"
+    payload_off: "1"
+    qos: 0
+    retain: true    
+  
+switch 6:
+  - platform: mqtt
+    name: "MQTT Fan Switch2"
+    state_topic: "/house2/switchConfirm2/"
+    command_topic: "/house2/switch2/"
+    payload_on: "0"
+    payload_off: "1"
+    qos: 0
+    retain: true    
+
+switch 7:
+  - platform: mqtt
+    name: "MQTT Night Lamp Switch2"
+    state_topic: "/house2/switchConfirm3/"
+    command_topic: "/house2/switch3/"
+    payload_on: "0"
+    payload_off: "1"
+    qos: 0
+    retain: true    
+  
+switch 8:
+  - platform: mqtt
+    name: "MQTT No Switch2"
+    state_topic: "/house2/switchConfirm4/"
+    command_topic: "/house2/switch4/"
+    payload_on: "0"
+    payload_off: "1"
+    qos: 0
+    retain: true  
+
+# Example configuration.yaml entry
+webostv:
+  host: 192.168.1.16
+  name: LG WebOS Dining Hall TV
+  turn_on_action:
+    service: wake_on_lan.send_magic_packet
+    data:
+      #message: "Turn on action"
+      mac: "70:97:41:65:26:4E"
+      #broadcast_address: 11.22.33.44
+  customize:
+    sources:
+      - livetv
+      - youtube
+      - makotv
+      - netflix
