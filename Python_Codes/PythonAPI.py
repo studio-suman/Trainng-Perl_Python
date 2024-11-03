@@ -19,7 +19,7 @@ def predict():
     return jsonify({'production' :str(prediction)})
 
 if __name__ == '__main__' :
-    model = joblib.load("final_model .pkl")
+    model = joblib.load("final_model.pkl")
     col_names = joblib.load('column_names.pkl')
 
     app.run(debug=True)
