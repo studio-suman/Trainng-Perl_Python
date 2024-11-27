@@ -5,8 +5,10 @@ import PyPDF2 as pdf
 from dotenv import load_dotenv
 load_dotenv()
 
+api_Key= "AIzaSyAKeJw0X76KvFWE4r1MGX0BpKULtSivrbQ"
 
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+#genai.configure(api_key=api_Key)
 
 
 #gemini function
@@ -47,7 +49,7 @@ jd={jd}
 ##stramlit
 
 st.title("Smart ATS")
-st.text("Imporve your ATS resume score Match")
+st.text("Improve your ATS resume score Match")
 jd = st.text_area("Paste job description here")
 uploaded_file= st.file_uploader("Upload your resume", type="pdf", help= "Please upload the pdf")
 
