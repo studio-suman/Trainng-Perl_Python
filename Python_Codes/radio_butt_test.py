@@ -12,6 +12,7 @@ def printName(x):
 	str = "Your name is {}"
 	print(str.format(x))
 
+
 def function():
 	selection = var.get()
 	if selection == 1:
@@ -79,6 +80,7 @@ def run_macro():
 master = tk.Tk(className='Tkinter - Run Macros')
 master.geometry('400x200')
 var = IntVar()
+
 Label(master, text = "Select the Macro You Want to Run").grid(row=0, sticky=W)
 Radiobutton(master, text = "ETR", variable = var, value = 1).grid(row=1, sticky=W)
 Radiobutton(master, text = "ZCOP", variable = var, value = 2).grid(row=2, sticky=W)
