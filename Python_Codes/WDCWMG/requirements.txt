@@ -1,0 +1,16 @@
+pypdf2
+python-dotenv
+google.generativeai
+tiktoken
+faiss-cpu
+langchain
+openai
+langchain-community
+langchain-chroma 
+langchain-openai 
+langchain_text_splitters 
+langgraph 
+beautifulsoup4 
+langchain-huggingface
+streamlit
+streamlit-chat
