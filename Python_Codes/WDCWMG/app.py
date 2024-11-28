@@ -49,7 +49,8 @@ jd={jd}
 
 ##streamlit
 
-st.header("WDC Smart ATS")
+#st.header("WDC Smart ATS")
+
 st.title("Smart ATS")
 st.text("Improve your ATS resume score Match")
 jd = st.text_area("Paste job description here")
