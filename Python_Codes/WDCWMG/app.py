@@ -41,13 +41,15 @@ input_prompt ="""
 resume={text}
 jd={jd}
 ### Evaluation Output:
-1. Calculate the percentage of match between the resume and the job description. Give a number and some explation
-2. Identify any key keywords that are missing from the resume in comparison to the job description.
-3. Offer specific and actionable tips to enhance the resume and improve its alignment with the job requirements.
+1. Calculate the percentage of match between the resume and the job description. Give a number and some explanation.
+2. Highlights and Lowlights of the resume.
+3. Identify any key keywords that are missing from the resume in comparison to the job description.
+4. Offer specific and actionable tips to enhance the resume and improve its alignment with the job requirements.
 """
 
-##stramlit
+##streamlit
 
+st.header("WDC Smart ATS")
 st.title("Smart ATS")
 st.text("Improve your ATS resume score Match")
 jd = st.text_area("Paste job description here")
