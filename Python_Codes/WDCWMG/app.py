@@ -41,7 +41,7 @@ input_prompt ="""
 resume={text}
 jd={jd}
 ### Evaluation Output:
-1. Calculate the percentage of match between the resume and the job description. Give a number and some explanation.
+1. Calculate the percentage of match between the resume and the job description. Give a number out of 100 and some explanation.
 2. Highlights and Lowlights of the resume.
 3. Identify any key keywords that are missing from the resume in comparison to the job description.
 4. Offer specific and actionable tips to enhance the resume and improve its alignment with the job requirements.
@@ -51,12 +51,12 @@ jd={jd}
 
 #st.header("WDC Smart ATS")
 
-st.title("Smart ATS")
+st.title("Smart ATS by WDC")
 st.text("Improve your ATS resume score Match")
 jd = st.text_area("Paste job description here")
-uploaded_file= st.file_uploader("Upload your resume", type="pdf", help= "Please upload the pdf")
+uploaded_file= st.file_uploader("Upload Resume", type="pdf", help= "Please upload the pdf")
 
-submit =  st.button('Check Your Score')
+submit =  st.button('Get The Score')
 if submit:
     if uploaded_file is not None:
         text =  input_pdf_text(uploaded_file)
