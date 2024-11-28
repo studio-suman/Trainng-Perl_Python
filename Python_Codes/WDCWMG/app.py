@@ -11,7 +11,7 @@ genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 #genai.configure(api_key=api_Key)
 
 
-#gemini function
+#gemini function added
 
 def get_gemini_response(input):
     model=genai.GenerativeModel('gemini-pro')
