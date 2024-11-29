@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"java.project.referencedLibraries": [
+			"lib/**/*.jar",
+			"Core_Java/junit-4.13.2.jar"
+		],
+		"git.ignoreLimitWarning": true,
+		"git.allowForcePush": false
+	}
+}
