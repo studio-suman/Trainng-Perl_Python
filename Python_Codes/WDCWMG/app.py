@@ -1,3 +1,11 @@
+#
+# 
+# Google Gemini API Based AI Model
+# Sourced from Open Source
+# Compiled by Suman Saha v2.0
+# Date : 30th November 2024
+# 
+
 import streamlit as st
 import google.generativeai as genai
 import os
@@ -5,7 +13,6 @@ import PyPDF2 as pdf
 from dotenv import load_dotenv
 load_dotenv()
 
-api_Key= "AIzaSyAKeJw0X76KvFWE4r1MGX0BpKULtSivrbQ"
 
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 #genai.configure(api_key=api_Key)
@@ -47,20 +54,46 @@ jd={jd}
 """
 #4. Offer specific and actionable tips to enhance the resume and improve its alignment with the job requirements.
 
+input_prompt2 = """
+
+### As a skilled Technical Interview Panel with advanced knowledge in technology and data science, your role is to meticulously evaluate a employer job description and provide technical Questions. 
+
+### Your evaluation will involve analyzing the job description for relevant skills, experiences that align with the job requirements. Look for key buzzwords and specific criteria outlined in the job description to determine the potential Questions and Answers.
+
+### Your evaluation should be thorough, precise, and objective, ensuring that the most relevant Questions and Answers are found that provide algorithm
+
+jd={jd}
+### Evaluation Output:
+1. Provide most relevant Questions and Answers in multiple choice options limiting to 5 options in below format A, B, C, D
+2. Provide atleast min 15 Questions and Answers span around 20 minutes duration
+3. Generate Real Use Case wise Questions and logical Question and avoid salary based questions
+4. Provide min 5 Code Sample Based Questions are mandatory
+"""
 ##streamlit
 
 #st.header("WDC Smart ATS")
 
-st.title("Smart Resume Job Description AI")
+st.title("Smart Job Description Resume AI")
 st.text("Improve your ATS resume score Match")
 jd = st.text_area("Paste job description here")
-uploaded_file= st.file_uploader("Upload Resume", type="pdf", help= "Please upload the pdf")
+
+option = st.radio(
+    "Please Select Below Options",
+    ("Resume", "Job Description"),
+    index= None# Using tuple instead of separate strings
+)
+
+if option == "Resume":
+    uploaded_file= st.file_uploader("Upload Resume", type="pdf", help= "Please upload the pdf")
+    
 
 submit =  st.button('Get The Score')
 if submit:
+   if option == "Resume":
     if uploaded_file is not None:
         text =  input_pdf_text(uploaded_file)
-        response=get_gemini_response(input_prompt.format(text=text, jd=jd))
+        response=get_gemini_response(input_prompt.format(text=text,jd=jd))
         st.subheader(response)
-
-   
+   else :
+        response=get_gemini_response(input_prompt2.format(jd=jd))
+        st.subheader(response) 
