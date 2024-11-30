@@ -44,14 +44,14 @@ jd={jd}
 1. Calculate the percentage of match between the resume and the job description. Give a number out of 100 and some explanation.
 2. Highlights and Lowlights of the resume.
 3. Identify any key keywords that are missing from the resume in comparison to the job description.
-4. Offer specific and actionable tips to enhance the resume and improve its alignment with the job requirements.
 """
+#4. Offer specific and actionable tips to enhance the resume and improve its alignment with the job requirements.
 
 ##streamlit
 
 #st.header("WDC Smart ATS")
 
-st.title("Smart ATS by WDC")
+st.title("Smart Resume Job Description AI")
 st.text("Improve your ATS resume score Match")
 jd = st.text_area("Paste job description here")
 uploaded_file= st.file_uploader("Upload Resume", type="pdf", help= "Please upload the pdf")
