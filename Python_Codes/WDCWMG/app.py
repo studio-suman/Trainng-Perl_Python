@@ -67,7 +67,7 @@ jd={jd}
 1. Provide most relevant Questions and Answers in multiple choice options limiting to 5 options in below format A, B, C, D
 2. Provide atleast min 15 Questions and Answers span around 20 minutes duration
 3. Generate Real Use Case wise Questions and logical Question and avoid salary based questions
-4. Provide min 5 Code Sample Based Questions are mandatory
+4. Provide min 5 Code Sample Based Questions are mandatory based on job description
 """
 ##streamlit
 
