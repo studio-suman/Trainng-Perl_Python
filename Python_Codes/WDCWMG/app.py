@@ -16,12 +16,18 @@ load_dotenv()
 
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 #genai.configure(api_key=api_Key)
-
+generation_config = {
+    "temperature": 0.9,
+    #"top_p": 1,
+    #"top_k": 1
+    #"max_output_token":2048
+}
 
 #gemini function added
 
 def get_gemini_response(input):
-    model=genai.GenerativeModel('gemini-pro')
+    model=genai.GenerativeModel('gemini-pro',generation_config=generation_config) # type: ignore
+
     response = model.generate_content(input)
     return response.text
 
