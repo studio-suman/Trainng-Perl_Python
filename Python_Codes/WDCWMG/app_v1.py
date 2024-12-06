@@ -1,35 +1,46 @@
 #
 # 
-# Google Gemini API Based AI Model
+# AzureOpenAI API Based AI Model
 # Sourced from Open Source
-# Compiled by Suman Saha v3.0
-# Date : 30th November 2024
-# Last Updated Date: 6th December 2024
+# Compiled by Suman Saha v2.0
+# Date : 6th December 2024
+# 
 
+import langchain
+from langchain_openai import AzureChatOpenAI
+from langchain_core.output_parsers import StrOutputParser
 import streamlit as st
 import google.generativeai as genai
 import os
 import PyPDF2 as pdf
 from dotenv import load_dotenv
+from langchain_community.cache import InMemoryCache
+
+from langchain.schema import (
+    AIMessage,
+    HumanMessage,
+    SystemMessage
+)
+langchain.llm_cache = InMemoryCache() # type: ignore
+
+
 load_dotenv()
 
 
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-#genai.configure(api_key=api_Key)
-generation_config = {
-    "temperature": 0.9,
-    #"top_p": 1,
-    #"top_k": 1
-    #"max_output_token":2048
-}
+llm = AzureChatOpenAI(
+    azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT"),
+    azure_deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
+    api_version = os.getenv("OPENAI_API_VERSION"),
+    temperature= 0.9
+)
+parser = StrOutputParser()
 
-#gemini function added
 
-def get_gemini_response(input):
-    model=genai.GenerativeModel('gemini-pro',generation_config=generation_config) # type: ignore
+#AzureOpen AI API Key
 
-    response = model.generate_content(input)
-    return response.text
+def get_AzureopenAI_response(input):  
+    result = llm.invoke(input)
+    return parser.invoke(result)
 
 #convert pdf to text
 def input_pdf_text(uploaded_file):
@@ -54,7 +65,7 @@ input_prompt ="""
 resume={text}
 jd={jd}
 ### Evaluation Output:
-1. Calculate the percentage of match between the resume and the job description. Give a number out of 100 and some explanation.
+1. Calculate the percentage, provide in %% of match between the resume and the job description. Give a number out of 100 and some explanation.
 2. Highlights and Lowlights of the resume.
 3. Identify any key keywords that are missing from the resume in comparison to the job description.
 """
@@ -101,8 +112,8 @@ if submit:
    if option == "Resume":
     if uploaded_file is not None:
         text =  input_pdf_text(uploaded_file)
-        response=get_gemini_response(input_prompt.format(text=text,jd=jd))
+        response=get_AzureopenAI_response(input_prompt.format(text=text,jd=jd))
         st.subheader(response)
    else :
-        response=get_gemini_response(input_prompt2.format(jd=jd))
+        response=get_AzureopenAI_response(input_prompt2.format(jd=jd))
         st.subheader(response) 
