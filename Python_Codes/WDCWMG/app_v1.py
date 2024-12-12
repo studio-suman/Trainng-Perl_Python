@@ -16,6 +16,7 @@ import PyPDF2 as pdf
 from dotenv import load_dotenv
 from langchain_community.cache import InMemoryCache
 
+
 from langchain.schema import (
     AIMessage,
     HumanMessage,
@@ -50,6 +51,7 @@ def input_pdf_text(uploaded_file):
         page=reader.pages[page]
         text+=str(page.extract_text())
     return text
+
 
 input_prompt ="""
 
