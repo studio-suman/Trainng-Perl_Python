@@ -6,21 +6,24 @@
 # Date : 17th December 2024
 # 
 
+import time
+import docx
 import langchain
 from langchain_openai import AzureChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 import streamlit as st
 import google.generativeai as genai
 import os
+import io
 import PyPDF2 as pdf
 from dotenv import load_dotenv
 from langchain_community.cache import InMemoryCache
 
 
 from langchain.schema import (
-    AIMessage,
-    HumanMessage,
-    SystemMessage
+        AIMessage,
+        HumanMessage,
+        SystemMessage
 )
 langchain.llm_cache = InMemoryCache() # type: ignore
 
@@ -136,7 +139,22 @@ option = st.radio(
 
 if option == "Resume":
     uploaded_file= st.file_uploader("Upload Resume", type="pdf", help= "Please upload the pdf")
-    
+
+
+def get_docx(text):
+    document = docx.Document()
+    document.add_paragraph(text)
+    ai_out = io.BytesIO()
+    document.save(ai_out)
+    return ai_out.getvalue()
+
+def download_button(response):
+    st.download_button(
+                label="Click here to download",
+                data=get_docx(response),
+                file_name="Generated_Output-"+time.strftime("%d%b%y")+".docx",
+                mime="docx"
+                ) 
 
 submit =  st.button('Get The Score')
 if submit:
@@ -145,10 +163,13 @@ if submit:
             text =  input_pdf_text(uploaded_file)
             response=get_AzureopenAI_response(input_prompt.format(text=text,jd=jd))
             st.subheader(response)
+            download_button(response)
+ 
    elif option == "Generate Job Description":
         response=get_AzureopenAI_response(input_prompt3.format(jd=jd))
-        st.subheader(response)  
+        st.subheader(response)
+        download_button(response)
    else :
         response=get_AzureopenAI_response(input_prompt2.format(jd=jd))
-        st.subheader(response) 
-        
+        st.subheader(response)
+        download_button(response)
