@@ -1,10 +1,11 @@
-#
-# 
-# AzureOpenAI API Based AI Model
-# Sourced from Open Source
-# Compiled by Suman Saha v2.0
-# Date : 17th December 2024
-# 
+'''
+AzureOpenAI API Based AI Model
+Sourced from Open Source
+Compiled by Suman Saha v2.0
+Date : 17th December 2024
+
+'''
+
 
 import time
 import docx
