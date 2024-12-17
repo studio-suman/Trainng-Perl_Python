@@ -380,7 +380,7 @@
 
 # $OutputEncoding = $OutputEncodingPrevious
 
-$Folder = "C:\temp"
+$Folder = "C:\Users\HSASS\OneDrive - Wipro\Desktop"
 $User = Read-Host "Input the sAMAccountName of user"
 $permission = (Get-Acl $Folder).Access | Where-Object{$_.IdentityReference -match $User} | Select-Object IdentityReference,FileSystemRights
 
