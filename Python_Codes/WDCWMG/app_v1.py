@@ -121,6 +121,12 @@ input_prompt3 = """
 
 """
 
+input_prompt4 = """
+
+### Create a job description
+
+"""
+
 ##streamlit
 
 #st.header("Smart JD AI")
@@ -167,7 +173,7 @@ if submit:
             download_button(response)
  
    elif option == "Generate Job Description":
-        response=get_AzureopenAI_response(input_prompt3.format(jd=jd))
+        response=get_AzureopenAI_response(input_prompt4.format(jd=jd))
         st.subheader(response)
         download_button(response)
    else :
