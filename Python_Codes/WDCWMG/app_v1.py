@@ -10,6 +10,7 @@ Date : 17th December 2024
 import time
 import docx
 import langchain
+import langchain.llms
 from langchain_openai import AzureChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 import streamlit as st
@@ -26,6 +27,7 @@ from langchain.schema import (
         HumanMessage,
         SystemMessage
 )
+
 langchain.llm_cache = InMemoryCache() # type: ignore
 
 
@@ -156,12 +158,15 @@ def get_docx(text):
     return ai_out.getvalue()
 
 def download_button(response):
-    st.download_button(
-                label="Click here to download",
-                data=get_docx(response),
-                file_name="Generated_Output-"+time.strftime("%d%b%y")+".docx",
-                mime="docx"
-                ) 
+    try:
+        st.download_button(
+                    label="Click here to download",
+                    data=get_docx(response),
+                    file_name="Generated_Output-"+time.strftime("%d%b%y")+".docx",
+                    mime="docx"
+                    )
+    except Exception as e:
+        st.error(f"An error occurred while generating the file: {e}")
 
 submit =  st.button('Get The Score')
 if submit:
