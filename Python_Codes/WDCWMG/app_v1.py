@@ -168,7 +168,7 @@ def download_button(response):
     except Exception as e:
         st.error(f"An error occurred while generating the file: {e}")
 
-submit =  st.button('Get The Score')
+submit =  st.button('Submit')
 if submit:
    if option == "Resume":
         if uploaded_file is not None:
