@@ -38,7 +38,7 @@ llm = AzureChatOpenAI(
     azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT"),
     azure_deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
     api_version = os.getenv("OPENAI_API_VERSION"),
-    temperature= 0.9
+    temperature= 0.3
 )
 parser = StrOutputParser()
 
@@ -125,7 +125,29 @@ input_prompt3 = """
 
 input_prompt4 = """
 
-### Create a job description
+### As a skilled Technical Interview Panel with advanced knowledge in technology and data science, your role is to meticulously evaluate a employer job description and provide detailed job description having below points outlined. 
+
+### Your evaluation will involve analyzing the job description for relevant skills, experiences that align with the job requirements. Look for key buzzwords and specific criteria outlined in the job description to determine the detailed job description
+
+### Your evaluation should be thorough, precise, and objective, ensuring that the most relevant job description is generated based on Skills and Experience mentioned
+
+### Your evaluation of job description should attract the right candidates"
+
+
+1. **Job Title and Summary**:
+   - "What are the key responsibilities for a {jd}?"
+
+2. **Key Responsibilities**:
+   - "List the main duties and responsibilities for a {jd}."
+   - "What are the daily tasks involved in {jd}?"
+
+3. **Qualifications and Skills**:
+   - "What qualifications are required for a {jd}?"
+   - "List the essential skills needed for a {jd}."
+
+4. **Experience Requirements**:
+   - "How many years of experience are needed for a {jd}?"
+   - "What type of previous experience is beneficial for a {jd}?"
 
 """
 

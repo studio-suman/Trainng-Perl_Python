@@ -5,7 +5,7 @@ from tkinter import Button, IntVar, Label, Radiobutton, W, mainloop, messagebox
 
 from AIR_ZCOP_file import AIR
 from Excel_Macro_Run import ETR, FSZCOP, ZCOP
-from Zcop_Report import churn_zcop, daily_zcop, weekly_zcop, rfp_zcop
+from Zcop_Report import churn_zcop, daily_zcop, rfp_zcop
 
 
 def printName(x):
@@ -45,29 +45,24 @@ def run_macro():
 		FSZCOP()
 		messagebox.showinfo('Information', 'Macro Ran Successfully')
 	elif option == 4:
-		#Calling Weekly ZCOP
-		Label(master, text = "Macro is Running --->").grid(row=10, sticky=W)
-		weekly_zcop()
-		messagebox.showinfo('Information', 'Macro Ran Successfully')
-	elif option == 5:
 		#Calling Daily ZCOP
 		Label(master, text = "Macro is Running --->").grid(row=10, sticky=W)
 		time.sleep(50)
 		daily_zcop()
 		messagebox.showinfo('Information', 'Macro Ran Successfully')
-	elif option == 6:		
+	elif option == 5:		
 		#Calling AIR
 		Label(master, text = "Macro is Running --->").grid(row=10, sticky=W)
 		time.sleep(50)
 		AIR()
 		messagebox.showinfo('Information', 'Macro Ran Successfully')
-	elif option == 7:		
+	elif option == 6:		
 		#Calling Churn ZCOP
 		Label(master, text = "Macro is Running --->").grid(row=10, sticky=W)
 		time.sleep(50)
 		churn_zcop()
 		messagebox.showinfo('Information', 'Macro Ran Successfully')
-	elif option == 8:		
+	elif option == 7:		
 		#Calling Churn ZCOP
 		Label(master, text = "Macro is Running --->").grid(row=10, sticky=W)
 		time.sleep(50)
