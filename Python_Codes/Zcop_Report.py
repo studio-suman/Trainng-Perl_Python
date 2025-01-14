@@ -1,5 +1,4 @@
 import gzip
-import os.path
 import shutil
 import sys
 import time
@@ -17,6 +16,15 @@ outfiler = r"C:\Users\HSASS\OneDrive - Wipro\Desktop\RFPZCOP_today.csv"
 outfiled = r"C:\Users\HSASS\OneDrive - Wipro\Desktop\ZCOP_today.csv"   
 skillFile = r"C:\Users\HSASS\Downloads\Employee Skill Details.csv"
 
+
+def time_calc(starttime):
+	
+	time_taken=time.time() - starttime
+	hours,rest = divmod(time_taken,3600)
+	minutes,seconds=divmod(rest,60)
+	str="---Execution Done in {} minutes and {} seconds ---"
+	print(str.format(minutes,seconds))
+
 def daily_zcop():
 
 	starttime=time.time()
@@ -25,17 +33,13 @@ def daily_zcop():
 	#	with open(r"C:\Users\HSASS\OneDrive - Wipro\Desktop\ZCOP_REPORT_DAY.csv", 'wb') as f_out:
 	#		shutil.copyfileobj(f_in, f_out)
 	#	print("File Extracted!!")
-	
-	#data = pd.read_csv(infile,usecols=["EMP_CODE","SMU","SECTOR","CUST_NAME","BILLABILITY_STATUS","APPROVED_INVESTMENT","EMP_NAME","LOCATION","CAREER_BAND","DERIVED_EMP_CITY","DERIVED_EMP_COUNTRY","ONS_OFF_FLAG","SERVICE_LINE","PRACTICE","TALENT_IDENTIFICATION",
-	#"GROUP_CUSTOMER_ID","GROUP_CUSTOMER_NAME","ROLE_DESCRIPTION","COMPANY_IDENTIFICATION_FG"], engine='python',sep=',', quotechar='"', error_bad_lines=False) 
-	#[["EMP_CODE","SMU","SECTOR","CUST_NAME","BILLABILITY_STATUS","INVESTMENT_FLAG","EMP_NAME","LOCATION","CAREER_BAND","DERIVED_EMP_CITY","DERIVED_EMP_COUNTRY","ONS_OFF_FLAG","SERVICE_LINE","PRACTICE","TALENT_IDENTIFICATION","GROUP_CUSTOMER_ID","GROUP_CUSTOMER_NAME","ROLE_DESCRIPTION","COMPANY_IDENTIFICATION_FG"]]
 
-	data = pd.read_csv(infile, engine='python',sep=',', quotechar='"') 
+	data = pd.read_csv(infile, engine='python',sep=',', quotechar='"', encoding='utf-8') 
 	
 	data = data[['EMP_CODE','SMU','SECTOR','CUST_NAME','BILLABILITY_STATUS','APPROVED_INVESTMENT','EMP_NAME','LOCATION','CAREER_BAND','DERIVED_EMP_CITY','DERIVED_EMP_COUNTRY','ONS_OFF_FLAG','SERVICE_LINE','PRACTICE',
 	'GROUP_CUSTOMER_ID','GROUP_CUSTOMER_NAME','ROLE_DESCRIPTION','COMPANY_IDENTIFICATION_FG','BILLABILITY_STATUS_NEW','SLDU']]
 
-	mapping = pd.read_csv(skillFile,usecols=["EMP_CODE","PROJECT_ACQUIRED_SKILLS","PRIMARY_SKILL","ROLE_ID","ROLE_DESCRIPTION"],engine='python',sep=',', quotechar='"')[["EMP_CODE","PROJECT_ACQUIRED_SKILLS","PRIMARY_SKILL","ROLE_ID","ROLE_DESCRIPTION"]]
+	mapping = pd.read_csv(skillFile,usecols=["EMP_CODE","PROJECT_ACQUIRED_SKILLS","SR_MANDATORY_SKILL","ROLE_ID","ROLE_DESCRIPTION"],engine='python',sep=',', quotechar='"')[["EMP_CODE","PROJECT_ACQUIRED_SKILLS","SR_MANDATORY_SKILL","ROLE_ID","ROLE_DESCRIPTION"]]
 	
 	#pd.io.formats.excel.header_style = None
 	
@@ -48,7 +52,6 @@ def daily_zcop():
 	final = data.merge(mapping, on='EMP_CODE', how='left')
 	
 	#writer = pd.ExcelWriter(outfiled,engine ='xlsxwriter')  
-
 	#data.to_excel(writer, sheet_name ="ZCOP",startcol = 0,startrow = 0, index = False)
 	
 	#workbook = writer.book
@@ -60,7 +63,6 @@ def daily_zcop():
     # 'valign': 'top',
     # 'fg_color': '#D7E4BC',
     # 'border': 0})
-	
 	
 	# worksheet.set_row(0, None, header_format)
 	# worksheet.set_zoom(100)
@@ -88,7 +90,6 @@ def churn_zcop():
 	#data = data[['EMP_CODE','LOAD_DATE','SMU','SECTOR','CUST_NUM','CUST_NAME','PROJECT_CODE','BILLABILITY_STATUS','TM_NAME','CAREER_BAND','LOCATION','GROUP_CUSTOMER_ID','GROUP_CUSTOMER_NAME','DERIVED_EMP_CITY','DERIVED_EMP_STATE','DERIVED_EMP_COUNTRY','DERIVED_EMP_GEOGRAPHY','ONS_OFF_FLAG','EXECUTION_HUB','MIS_PROP_DATE','MIS_PROP_LVL','MIS_VIS_DATE','MIS_VIS_LVL','HOME_COUNTRY','PROJ_COUNTRY','COMPANY_IDENTIFICATION_FG']]
 
 	
-	
 	data = data.sort_values(by ='SMU',ascending=True)
 	
 	data.to_csv(outfilec, index=False)
@@ -115,12 +116,3 @@ def rfp_zcop():
 	
 	data.to_csv(outfiler, index=False)
 	time_calc(starttime)
-
-
-def time_calc(starttime):	
-	
-	time_taken=time.time() - starttime
-	hours,rest = divmod(time_taken,3600)
-	minutes,seconds=divmod(rest,60)
-	str="---Execution Done in {} minutes and {} seconds ---"
-	print(str.format(minutes,seconds))	
