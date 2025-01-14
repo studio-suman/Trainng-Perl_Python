@@ -30,18 +30,26 @@ from langchain.schema import (
 
 langchain.llm_cache = InMemoryCache() # type: ignore
 
-
 load_dotenv()
+
+st.set_page_config(page_title='Smart JD AI', initial_sidebar_state = 'auto',)
+
+# favicon being an object of the same kind as the one you should provide st.image() with (ie. a PIL array for example) or a string (url or local file path)
+st.title("Smart Job Description Resume AI")
+st.text("Improve your ATS resume score Match")
+jd = st.text_area("Paste job description here")
+
+temp = st.slider("Creativity", 0.0, 1.0, 0.3, 0.1)
 
 
 llm = AzureChatOpenAI(
     azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT"),
     azure_deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
     api_version = os.getenv("OPENAI_API_VERSION"),
-    temperature= 0.3
+    temperature= temp
 )
-parser = StrOutputParser()
 
+parser = StrOutputParser()
 
 #AzureOpen AI API Key
 
@@ -155,12 +163,6 @@ input_prompt4 = """
 
 #st.header("Smart JD AI")
 
-st.set_page_config(page_title='Smart JD AI', initial_sidebar_state = 'auto',)
-
-# favicon being an object of the same kind as the one you should provide st.image() with (ie. a PIL array for example) or a string (url or local file path)
-st.title("Smart Job Description Resume AI")
-st.text("Improve your ATS resume score Match")
-jd = st.text_area("Paste job description here")
 
 option = st.radio(
     "Please Select Below Options",
