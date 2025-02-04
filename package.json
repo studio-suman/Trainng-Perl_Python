@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@angular/cli": "^19.1.5",
     "@azure/openai": "^2.0.0-beta.2",
     "del": "^7.0.0",
     "fancy-log": "^2.0.0",
