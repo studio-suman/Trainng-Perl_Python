@@ -14,8 +14,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-#genai.configure(api_key=api_Key)
+#genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+genai.configure(api_key=api_Key)
 generation_config = {
     "temperature": 0.9,
     #"top_p": 1,
