@@ -32,7 +32,7 @@ langchain.llm_cache = InMemoryCache() # type: ignore
 
 load_dotenv()
 
-st.set_page_config(page_title='Smart JD AI', initial_sidebar_state = 'auto',)
+st.set_page_config(page_title='Smart JD AI', initial_sidebar_state = 'auto')
 
 # favicon being an object of the same kind as the one you should provide st.image() with (ie. a PIL array for example) or a string (url or local file path)
 st.title("Smart Job Description Resume AI")

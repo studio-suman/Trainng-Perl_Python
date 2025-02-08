@@ -9,8 +9,10 @@ from typing import Any, List, Mapping, Optional
 import requests
 import streamlit as st
 
+st.set_page_config(page_title='Smart JD AI', initial_sidebar_state = 'auto')
 st.title("ChatJob Description")
 
+client_id = "8dea253e-4cae-467b-88a5-88df4477c79f" #client_id_KK:"66ab59c3-896d-4de8-a2e9-3148b18ceeca" # client_id_suman#"8dea253e-4cae-467b-88a5-88df4477c79f"
 
 os.environ["token"] = "Bearer token|123675a6-95f6-4fb7-bc95-30095472ae3a|02de311fd83421a7fd637bf34dc8f959caa29f39888d2919e4b9640a2220224b"
 token = os.environ["token"]
@@ -18,6 +20,7 @@ token = os.environ["token"]
 from typing import ClassVar
 parser = StrOutputParser()
 
+#Calling Custom LLM Class for calling Lab45 API functions
 class LlamaLLM(LLM):
     llm_url: ClassVar[str] = 'https://api.lab45.ai/v1.1/skills/completion/query'
     
@@ -32,8 +35,8 @@ class LlamaLLM(LLM):
     repeat_last_n:  Optional[int]   = 64
     repeat_penalty: Optional[float] = 1.18
 
-    class Config:
-        extra = Extra.forbid
+    """ class Config:
+        extra = Extra.forbid """
 
     @property
     def _llm_type(self) -> str:
@@ -135,7 +138,37 @@ prompt2 =   """
             "What type of previous experience is beneficial?"
             """ + skill1 + skill2 + skill3 + skill4 + title
 
+def lab45agent(prompt):
+    # Define the API endpoint for interacting with the agents chatAPI
+    agents_endpoint = f"https://api.lab45.ai/v1.1/agent_chat_session/query"  # The endpoint where agent-related operations are available
 
+    # Set the headers for the request, including content type, accepted response format, and authorization token
+    headers = {
+        'Content-Type': "application/json",  # The content type is set to JSON, meaning the body will be JSON-encoded
+        'Accept': "text/event-stream, application/json",  # The client expects either event-stream or JSON as the response format
+        'Authorization': token  # Replace <api_key> with your actual API key for authentication
+    }
+
+    # Define the payload (request body) for the API call, which contains the conversation details and instructions for the agent
+    payload = {
+        "conversation_id": "",  
+        "messages": [  
+            {
+                "content": prompt,  
+                "name": "Suman",
+                "role": "user"
+            }
+        ],
+        "party_id": client_id,  # The unique ID of the party (here it is the agent_id which is generated in agents api)
+        "party_type": "Agent",
+        "save_conversation": False,  
+        "stream_response": False  
+    }
+
+    response = requests.post(agents_endpoint, headers=headers, json=payload)
+
+    # Print the response from the API call to inspect the result (status code, content, etc.)
+    return response.json()
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -150,7 +183,8 @@ if prompt := st.chat_input("How can you help you today?"):
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
-        response = client._call(prompt,user)
+        #response = client._call(prompt,user) #calling custom LLM class
+        response = lab45agent(prompt)
         parsed_result = response['data']['content'] #type: ignore
-        parsed = parser.invoke(parsed_result)
+        parsed = parser.invoke(parsed_result) #type: ignore
         st.markdown(parsed)
