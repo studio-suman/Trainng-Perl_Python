@@ -1,4 +1,7 @@
+import io
 import os
+import time
+from docx import Document
 from openai import OpenAI
 from langchain_openai import AzureChatOpenAI
 from pydantic import Extra, SecretStr
@@ -9,7 +12,7 @@ from typing import Any, List, Mapping, Optional
 import requests
 import streamlit as st
 
-st.set_page_config(page_title='Smart JD AI', initial_sidebar_state = 'auto')
+st.set_page_config(page_title='Smart JD AI', initial_sidebar_state = 'auto',page_icon="🦈")
 st.title("ChatJob Description")
 
 client_id = "8dea253e-4cae-467b-88a5-88df4477c79f" #client_id_KK:"66ab59c3-896d-4de8-a2e9-3148b18ceeca" # client_id_suman#"8dea253e-4cae-467b-88a5-88df4477c79f"
@@ -170,6 +173,49 @@ def lab45agent(prompt):
     # Print the response from the API call to inspect the result (status code, content, etc.)
     return response.json()
 
+def get_docx(text):
+    document = Document()
+    document.add_paragraph(text)
+    ai_out = io.BytesIO()
+    document.save(ai_out)
+    return ai_out.getvalue()
+def download_button(response):
+    try:
+        st.download_button(
+                    label="Click here to download",
+                    data=get_docx(response),
+                    file_name="Generated_Output-"+time.strftime("%d%b%y")+".docx",
+                    mime="docx"
+                    )
+    except Exception as e:
+        st.error(f"An error occurred while generating the file: {e}")
+
+
+ ####Upload section to upload documents
+# if "uploader_visible" not in st.session_state:
+#     st.session_state["uploader_visible"] = False
+# def show_upload(state:bool):
+#     st.session_state["uploader_visible"] = state
+    
+# with st.chat_message("system",avatar="🧑‍💻"):
+#     cols= st.columns((3,1,1))
+#     cols[0].write("Do you want to upload a file?")
+#     cols[1].button("Yes", use_container_width=True, on_click=show_upload, args=[True]) # type: ignore
+#     cols[2].button("No", use_container_width=True, on_click=show_upload, args=[False]) # type: ignore
+
+# if st.session_state["uploader_visible"]:
+#     with st.chat_message("system",avatar="🧑‍💻"):
+#         file = st.file_uploader("Upload your data")
+#         if file:
+#             with st.spinner("Processing your file"):
+#                  time.sleep(5) #<- dummy wait for demo.      
+# #Senior Java Developer with Core Java L2, Spring Boot L2, Hibernate L2, Selenium L2 "
+
+def response_generator(response):
+    for word in response.split():
+        yield word + " "
+        time.sleep(0.05)
+
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -181,10 +227,20 @@ if prompt := st.chat_input("How can you help you today?"):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
-
+        #show_upload(False)
+    # with st.chat_message("system",avatar="🧑‍💻"):
+    #     cols= st.columns((3,1,1))
+    #     option = st.radio(
+    # "Please Select Below Options",
+    # ("Resume", "Questions From Job Description", "Generate Job Description"),
+    # index= None# Using tuple instead of separate strings
+    # )
     with st.chat_message("assistant"):
         #response = client._call(prompt,user) #calling custom LLM class
         response = lab45agent(prompt)
         parsed_result = response['data']['content'] #type: ignore
         parsed = parser.invoke(parsed_result) #type: ignore
+        #download_button(parsed)
         st.markdown(parsed)
+        #st.write_stream(response_generator(parsed))
+        st.session_state.messages.append({"role": "assistant", "content": parsed})

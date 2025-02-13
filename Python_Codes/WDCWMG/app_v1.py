@@ -6,9 +6,8 @@ Date : 17th December 2024
 
 '''
 
-
 import time
-import docx
+from docx import Document
 import langchain
 import langchain.llms
 from langchain_openai import AzureChatOpenAI
@@ -175,7 +174,7 @@ if option == "Resume":
 
 
 def get_docx(text):
-    document = docx.Document()
+    document = Document()
     document.add_paragraph(text)
     ai_out = io.BytesIO()
     document.save(ai_out)
