@@ -11,9 +11,16 @@ from langchain.llms.base import LLM
 from typing import Any, List, Mapping, Optional
 import requests
 import streamlit as st
+from sympy import true
 
-st.set_page_config(page_title='Smart JD AI', initial_sidebar_state = 'auto',page_icon="🦈")
-st.title("ChatJob Description")
+st.set_page_config(page_title='Smart JD AI', initial_sidebar_state = 'auto',page_icon="favicon.ico") #page_icon="🦈"
+
+
+col1, col2 = st.columns([10,60])
+with col1:
+    st.image("favicon.png")
+with col2:
+    st.title("ChatJob Description") 
 
 client_id = "8dea253e-4cae-467b-88a5-88df4477c79f" #client_id_KK:"66ab59c3-896d-4de8-a2e9-3148b18ceeca" # client_id_suman#"8dea253e-4cae-467b-88a5-88df4477c79f"
 
@@ -104,43 +111,6 @@ class LlamaLLM(LLM):
 
 client = LlamaLLM()
 
-skill1="Core Java L1"
-skill2="Spring Boot L2"
-skill3="Hibernate L3"
-skill4="Selenium L4"
-title="Senior Java Full Stack Developer"
-user = "system"
-prompt1 = """As a skilled Technical Interview Panel with advanced knowledge in technology and data science, your role is to meticulously evaluate a employer job description and provide detailed job description having below points outlined.
-            Use the mentioned skills & title to generate the job description, where L1 means Beginner, L2 means Intermediate, L3 means Advanced, and L4 means Expert,
-            1. **Job Title and Summary**:
-            - "What are the key responsibilities?"
-            
-            2. **Key Responsibilities**:
-            - "List the main roles and responsibilities as per title and combination of skill along with proficiency"
-
-            3. **Qualifications and Skills**:
-            - "What qualifications are required?"
-            - "List the essential skills needed and mention the level of expertise required."
-
-            4. **Experience Requirements**:
-            - "How many years of experience are needed?"
-            - "What type of previous experience is beneficial?"
-
-            """ + skill1 + skill2 + skill3 + skill4 + title
-prompt2 =   """
-            Use the mentioned skills & title to generate the job description, where L1 means Beginner, L2 means Intermediate, L3 means Advanced, and L4 means Expert,
-            Job Title and Summary:
-            "What are the key responsibilities?"
-            Key Responsibilities:
-            "List the main roles and responsibilities as per title and combination of skill along with proficiency"
-            Qualifications and Skills:
-            "What qualifications are required?"
-            "List the essential skills needed and mention the level of expertise required."
-            Experience Requirements:
-            "How many years of experience are needed?"
-            "What type of previous experience is beneficial?"
-            """ + skill1 + skill2 + skill3 + skill4 + title
-
 def lab45agent(prompt):
     # Define the API endpoint for interacting with the agents chatAPI
     agents_endpoint = f"https://api.lab45.ai/v1.1/agent_chat_session/query"  # The endpoint where agent-related operations are available
@@ -165,7 +135,7 @@ def lab45agent(prompt):
         "party_id": client_id,  # The unique ID of the party (here it is the agent_id which is generated in agents api)
         "party_type": "Agent",
         "save_conversation": False,  
-        "stream_response": False  
+        "stream_response": False
     }
 
     response = requests.post(agents_endpoint, headers=headers, json=payload)
