@@ -1,5 +1,5 @@
 library(ggplot2)
-require(tideyverse)
+require(tidyverse)
 print("Hello world", quote = FALSE)
 
 
@@ -11,3 +11,7 @@ print(head(cars, 10))
 x <- c(0:10)
 ggplot(data = cars, aes(x = weight, y = hindfoot_length)) +
   geom_point()
+
+
+x_lm <- glm(x~c, data = x)
+summary(x_lm)
