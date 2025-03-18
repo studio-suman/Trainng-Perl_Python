@@ -88,18 +88,18 @@ jd={jd}
 
 input_prompt2 = """
 
-### As a skilled Technical Interview Panel with advanced knowledge in technology and data science, your role is to meticulously evaluate a employer job description and provide technical Questions. 
+### As a skilled Technical Interview Panel with advanced knowledge in technology in Information technology, your role is to meticulously evaluate a employer job description and provide technical Questions. 
 
-### Your evaluation will involve analyzing the job description for relevant skills, experiences that align with the job requirements. Look for key buzzwords and specific criteria outlined in the job description to determine the potential Questions and Answers.
+### Your evaluation will involve analyzing the job description for relevant skills, experiences that align with the job requirements. Look for key buzzwords and specific criteria outlined in the job description to determine the potential Questions and Answers with difficulty level as Expert where where L1 means Beginner, L2 means Intermediate, L3 means Advanced, and L4 means Expert
 
-### Your evaluation should be thorough, precise, and objective, ensuring that the most relevant Questions and Answers are found that provide algorithm
+### Your evaluation should be thorough, precise, and objective, ensuring that the most relevant Questions and Answers are found that provide algorithm dificulty level as Expert.
 
 jd={jd}
 ### Evaluation Output:
 1. Provide most relevant Questions and Answers in multiple choice options limiting to 5 options in below format A, B, C, D
-2. Provide atleast min 15 Questions and Answers span around 20 minutes duration
+2. Provide atleast min 20 Questions and Answers span around 20 minutes duration
 3. Generate Real Use Case wise Questions and logical Question and avoid salary based questions
-4. Provide min 5 Code Sample Based Questions are mandatory based on job description
+4. Provide min 6 Code Sample Based Questions are mandatory based on job description
 """
 
 input_prompt3 = """
