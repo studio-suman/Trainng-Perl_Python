@@ -1,0 +1,9 @@
+2025-03-28 11:26:19,542 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-03-28 11:28:09,902 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-03-28 11:28:47,724 - ERROR - Error sending emails(-2147352567, 'Exception occurred.', (4096, 'Microsoft Outlook', 'The object does not support this method.', None, 0, -2147352567), None)
+2025-03-28 11:29:46,665 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-03-28 11:31:31,030 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-03-28 11:32:06,268 - ERROR - Error sending emails(-2147352567, 'Exception occurred.', (4096, 'Microsoft Outlook', 'The object does not support this method.', None, 0, -2147352567), None)
+2025-03-28 11:36:04,892 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-03-28 11:37:59,894 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-03-28 11:38:36,538 - ERROR - Error sending emails(-2147352567, 'Exception occurred.', (4096, 'Microsoft Outlook', 'The object does not support this method.', None, 0, -2147352567), None)

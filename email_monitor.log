@@ -1,0 +1,27 @@
+2025-03-28 00:03:35,514 - ERROR - Error extracting date and time: 1 validation error for LLMChain
+prompt
+  Input should be a valid dictionary or instance of BasePromptTemplate [type=model_type, input_value='Extract date and time fr...ment Team \r\n\r\n \r\n', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.10/v/model_type
+2025-03-28 00:06:46,559 - ERROR - Error extracting date and time: 1 validation error for LLMChain
+prompt
+  Input should be a valid dictionary or instance of BasePromptTemplate [type=model_type, input_value='Extract date and time fr...ment Team \r\n\r\n \r\n', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.10/v/model_type
+2025-03-28 10:13:48,870 - ERROR - Error extracting date and time: 1 validation error for LLMChain
+prompt
+  Input should be a valid dictionary or instance of BasePromptTemplate [type=model_type, input_value='Extract date and time fr...ment Team \r\n\r\n \r\n', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.10/v/model_type
+2025-03-28 10:17:24,011 - ERROR - Error extracting date and time: 1 validation error for LLMChain
+prompt
+  Input should be a valid dictionary or instance of BasePromptTemplate [type=model_type, input_value='Extract date and time fr...ment Team \r\n\r\n \r\n', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.10/v/model_type
+2025-03-28 10:25:03,410 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-03-28 10:29:44,292 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-03-28 10:32:27,146 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-03-28 10:39:13,891 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-03-28 10:41:09,351 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-03-28 10:41:50,264 - WARNING - No valid date and time found in the email body.
+2025-03-28 10:43:33,577 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-03-28 10:46:28,991 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-03-28 10:49:47,818 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-03-28 10:50:29,767 - INFO - Meeting scheduled for 2025-03-30 21:09:00
+2025-03-28 10:52:50,790 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
