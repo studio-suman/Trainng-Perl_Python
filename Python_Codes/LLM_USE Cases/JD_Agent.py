@@ -13,7 +13,7 @@ import logging
 
 
 # Initialize logging
-logging.basicConfig(filename='email_monitor2.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='email_monitor2.log', level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Function to generate job description using Ollama 3.2 local LLM
 def generate_job_description(job_desc, skills):
@@ -115,11 +115,11 @@ with tab2:
         )
         prompt_template = PromptTemplate(
             input_variables = ["job_desc", "resume"],
-            template = """Match the following job description with the resume and provide a score between 1-100 and also matching reason:
+            template = """Match the following job description with the resume and provide a score between 1-100 and also provide matching reason in one sentence:
             Job Description:{job_desc}
             Resume:{resume}
             Score:
-            Match_Reason:"""
+            Match Reason:"""
         )
         chain = LLMChain(llm=llm, prompt=prompt_template)
  
@@ -127,15 +127,16 @@ with tab2:
         match_reason = []
         for resume in resumes:
             response = chain.run({"job_desc": job_desc, "resume": resume})
+            print(response)
             score_match = re.search(r'Score:\s*(\d+)', response)
-            match_reason_match = re.search(r'Match_Reason:\s*(.*)', response)
+            match_reason_match = re.search(r'Match Reason:\s*(.*)', response)
             if score_match:
                 score1 = int(score_match.group(1))
                 scores.append(float(score1))  # Convert score to float
             else:
                 scores.append(0)  # Assign a default score if no match is found
             if match_reason_match:
-                match = score_match.group(1) # type: ignore
+                match = match_reason_match.group(1) # type: ignore
                 match_reason.append(match)  # Convert score to float
             else:
                 match_reason.append(0)  # Assign a default score if no match is found
@@ -146,40 +147,75 @@ with tab2:
         try:
             pythoncom.CoInitialize()  # Initialize the COM library
             outlook = win32.Dispatch('outlook.application')
-        
-            for row in df.iterrows():
+            print(df)
+            for index, row in df.iterrows():
                 mail = outlook.CreateItem(0)
-                mail.To = "suman.saha2@wipro.com", #str(row['Email'])
-                mail.Subject = 'Job Opportunity'
-                mail.Body = f"Dear Candidate,\n\nWe have reviewed your resume and found it suitable for the following job role:\n\nYour resume score is: {row['Score']}\nMatching Reason: {row['Match Reason']}\n\nBest regards,\nRecruitment Team"
+                mail.To = str(row['Email']),
+                mail.Subject = 'Congratulations! You have Been Shortlisted for the Position'
+                mail.Body = f"Dear Candidate,\n\nWe have reviewed your resume and found it suitable for the following job role:\n\nYour resume score is: {row['Score']}%\nMatching Reason: {row['Match Reason']}\n\nBest regards,\nRecruitment Team"
                 mail.Send()
             print("Emails sent successfully.")
         except Exception as e:
             logging.error(f"Error sending emails{e}")
             print(f"An error occurred: {e}")
 
-    if st.button("Match"):
+    # if st.button("Match"):
         
-        if uploaded_files:
-            resumes, emails = read_resumes(uploaded_files)
-            scores, match_reason = rank_resumes_ollama(job_description, resumes)
+    #     if uploaded_files:
+    #         resumes, emails = read_resumes(uploaded_files)
+    #         scores, match_reason = rank_resumes_ollama(job_description, resumes)
             
-            st.write("Ranked Resumes:")
-                # Create a DataFrame to store the results
-            df_results = pd.DataFrame({
-                'File Name': [file.name for file in uploaded_files],
-                'Score': scores,
-                'Email': emails,
-                'Match Reason': match_reason,
-                'Resume Text': resumes  # Optional: Include resume text if needed for further processing or analysis
-                })
-            df_results_out=df_results
-        st.dataframe(df_results_out)
-        send_emails(df_results_out)
+    #         st.write("Ranked Resumes:")
+    #             # Create a DataFrame to store the results
+    #         df_results = pd.DataFrame({
+    #             'File Name': [file.name for file in uploaded_files],
+    #             'Score': scores,
+    #             'Email': emails,
+    #             'Match Reason': match_reason,
+    #             'Resume Text': resumes  # Optional: Include resume text if needed for further processing or analysis
+    #             })
+    #         df_results_out = pd.concat([df_results_out, df_results], ignore_index=True)
+    #     st.dataframe(df_results_out)
+    #     #send_emails(df_results_out)
         
-        # Button to send emails to candidates based on DataFrame results
-        if st.button("Send Emails"):
-            print("Button Clicked")
-            st.write("Email Button Clicked")
-            send_emails(df_results_out)
-            st.dataframe(df_results_out)
+    #     # Button to send emails to candidates based on DataFrame results
+    #     if st.button("Send Emails", key="send_emails"):
+    #         try:
+    #             print("Button Clicked")
+    #             st.write("Email Button Clicked")
+    #             send_emails(df_results_out)
+    #             st.dataframe(df_results_out)
+    #         except Exception as e:
+    #             logging.error(f'Error Encountered: {e}')
+        # Initialize session state for buttons
+if 'df_results_out' not in st.session_state:
+    st.session_state.df_results_out = pd.DataFrame()
+
+if st.button("Match"):
+    if uploaded_files:
+        resumes, emails = read_resumes(uploaded_files)
+        scores, match_reason = rank_resumes_ollama(job_description, resumes)
+        
+        st.write("Ranked Resumes:")
+        # Create a DataFrame to store the results
+        df_results = pd.DataFrame({
+            'File Name': [file.name for file in uploaded_files],
+            'Score': scores,
+            'Email': emails,
+            'Match Reason': match_reason,
+            'Resume Text': resumes  # Optional: Include resume text if needed for further processing or analysis
+        })
+        st.session_state.df_results_out = pd.concat([st.session_state.df_results_out, df_results], ignore_index=True)
+    st.dataframe(st.session_state.df_results_out)
+    #send_emails(st.session_state.df_results_out)
+
+    # Button to send emails to candidates based on DataFrame results
+if st.button("Send Emails", key="send_emails"):
+    try:
+        print("Button Clicked")
+        st.write("Email Button Clicked")
+        send_emails(st.session_state.df_results_out)
+        #st.dataframe(st.session_state.df_results_out)
+        st.session_state.df_results_out = pd.DataFrame()
+    except Exception as e:
+        logging.error(f'Error Encountered: {e}')

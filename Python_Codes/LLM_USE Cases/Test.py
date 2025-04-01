@@ -19,11 +19,11 @@ def rank_resumes_ollama(job_desc, resumes):
         )
         prompt_template = PromptTemplate(
             input_variables = ["job_desc", "resume"],
-            template = """Match the following job description with the resume and provide a score between 1-100 and also matching reason:
+            template = """Match the following job description with the resume and provide a score between 1-100 and also provide the matching reason:
             Job Description:{job_desc}
             Resume:{resume}
             Score:
-            Match_Reason:"""
+            Match Reason:"""
         )
         chain = LLMChain(llm=llm, prompt=prompt_template)
  
@@ -32,7 +32,7 @@ def rank_resumes_ollama(job_desc, resumes):
         for resume in resumes:
             response = chain.run({"job_desc": job_desc, "resume": resume})
             score_match = re.search(r'Score:\s*(\d+)', response)
-            match_reason_match = re.search(r'Match_Reason:\s*(.*)', response)
+            match_reason_match = re.search(r'Match Reason:\s*(.*)', response)
             if score_match:
                 score1 = int(score_match.group(1))
                 scores.append(float(score1))  # Convert score to float
@@ -137,8 +137,8 @@ Associated with delivering critical change requests relating to browser compatib
 Loyalty Kiosk (07/2014 - 05/2016)
 Associate in development, enhancements and maintenance. Worked"""
 
-scores, match_reasons = rank_resumes_ollama(job_description, resumes.splitlines())
-df = pd.DataFrame({'Resume': resumes.splitlines(), 'Score': scores, 'Match Reason': match_reasons})
+scores, match_reasons = rank_resumes_ollama(job_description, resumes)
+df = pd.DataFrame({'Resume': resumes, 'Score': scores, 'Match Reason': match_reasons})
 df_results_out = pd.concat([df_results_out, df], ignore_index=True)
 
 send_emails(df_results_out)
