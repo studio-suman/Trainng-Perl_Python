@@ -82,7 +82,7 @@ def run_llm_chain(resume):
 
 
 # Streamlit app
-st.title("Resume Parser with LLaMA and LangChain")
+st.title("Resume Parser with LLM")
 
 uploaded_files = st.file_uploader("Upload Resumes", accept_multiple_files=True, type=['pdf', 'docx'])
 
