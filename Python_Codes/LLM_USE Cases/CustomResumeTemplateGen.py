@@ -16,7 +16,7 @@ def parse_pdf(file):
             text = ""
             for page in pdf.pages:
                 text += page.extract_text()
-        return text
+        return text.strip().replace('\n', ' ').replace('\r', '')
     except Exception as e:
         st.error(f"Error parsing PDF: {e}")
         return ""
@@ -63,7 +63,7 @@ def run_llm_chain(resume):
 
     prompt_template = PromptTemplate(
         input_variables=["resume"],
-        template= """Could you please provide the following details based on {resume} and your vast technical and analytical experience into below categories?
+        template= """Could you please provide the following details based on {resume} and based your vast technical and analytical experience into below categories?
             Name: look for the candidate's name,
             Email: look for entries email address with @,
             Phone: look for the phone number with 10 digits,
