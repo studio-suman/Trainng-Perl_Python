@@ -1,22 +1,26 @@
 import streamlit as st
-from langchain.chains import LLMChain
 from langchain_ollama import ChatOllama
-from langchain.prompts import PromptTemplate
-from typing import TypedDict, Annotated
+from typing import TypedDict
+from typing_extensions import Annotated
 import pdfplumber
+#from CustomDocxBoilerv1 import generate_docx
+import LLMLab45
+#import os
  
 # Initialize Ollama LLM
 llm = ChatOllama(
     model="llama3.2:latest",
     temperature=0
 )
- 
+
+llm = LLMLab45.LlamaLLM()
+
 class Parser_Resume(TypedDict):
-    Name: str
+    name: str
+    mail_id: Annotated[str,"First Occurrence of Mail ID"]
     Summary: Annotated[str,"""Please review the resume and provide a concise summary of the candidate's
     key qualifications, experiences, and achievements. Focus on the most relevant information that
     highlights their suitability for the role.The summary should be brief, clear, and to the point."""]
-    mail_id: Annotated[str,"First Occurance of Mail ID"]
     skills: Annotated[list[str],""""Please review the resume and list the skills mentioned by the candidate.
                                     Focus on both technical and soft skills, including any specific tools, technologies, languages,
                                     or methodologies they are proficient in. Ensure to include any certifications or training that
@@ -44,26 +48,76 @@ class Parser_Resume(TypedDict):
 structured_model = llm.with_structured_output(Parser_Resume)
  
 # Streamlit application
-st.title("Resume Parser")
+st.title("Resume Parser using LLM")
  
 uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
  
 if uploaded_file is not None:
-    # Read the PDF file using pdfplumber
-    with pdfplumber.open(uploaded_file) as pdf:
-        text = ""
-        for page in pdf.pages:
-            text += page.extract_text()
- 
-    # Store the text in the resume variable
-    resume = text
-    resume = resume[:6500]
- 
-    # Display the resume text in Streamlit
-    st.text_area("Resume Text", resume, height=300)
- 
-    # Invoke the structured model with the resume text
-    result = structured_model.invoke(resume)
-    #print(resume)
-    print(result)
-    st.write(result)
+    # Validate file size (max 10MB)
+    if uploaded_file.size > 10 * 1024 * 1024:
+        st.error("File size too large. Please upload a file less than 10MB.")
+    else:
+        try:
+            # Show loading spinner while processing
+            with st.spinner("Processing resume..."):
+                # Read the PDF file using pdfplumber
+                with pdfplumber.open(uploaded_file) as pdf:
+                    text = ""
+                    for page in pdf.pages:
+                        text += page.extract_text()
+
+                # Validate content length
+                resume = text[:6500]  # Truncate to 6500 chars
+                if len(text) > 6500:
+                    st.warning("Resume text was truncated to 6500 characters for processing")
+
+                # Display the resume text in collapsible section
+                with st.expander("View Resume Text"):
+                    st.text_area("Original Text", resume, height=300)
+
+                # Process resume with LLM
+                    result = structured_model.invoke(resume)
+
+                # Display results in organized sections
+                if result:
+                    st.subheader("Parsed Resume Information")
+                    result = None
+                
+                # Display results in organized sections
+                st.subheader("Parsed Resume Information")
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.write("📝 Basic Information")
+                    st.write(f"Name: {result['name']}") # type: ignore
+                    st.write(f"Email: {result['mail_id']}") # type: ignore
+                
+                st.write("📋 Summary")
+                st.write(result['Summary']) # type: ignore
+                
+                with st.expander("🔧 Skills"):
+                    for skill in result['skills']: # type: ignore
+                        st.write(f"• {skill}") # type: ignore
+                
+                with st.expander("💼 Business & Functional Capabilities"):
+                    st.write("Business Capabilities:")
+                    for cap in result['Business_Capabilities']: # type: ignore
+                        st.write(f"• {cap}")
+                    st.write("Functional Capabilities:")
+                    for cap in result['Functional_Capabilities']: # type: ignore
+                        st.write(f"• {cap}")
+                
+                with st.expander("🎓 Education"):
+                    for edu in result['Education']: # type: ignore
+                        st.write(f"• {edu}")
+                
+                with st.expander("👔 Professional Experience"):
+                    for exp in result['professional_experience']: # type: ignore
+                        st.write(f"• {exp}")
+                
+                with st.expander("🤝 Client History"):
+                    for client in result['clients']: # type: ignore
+                        st.write(f"• {client}")
+            #generate_docx(result)
+        except Exception as e:
+            st.error(f"Error processing the PDF: {str(e)}")

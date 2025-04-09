@@ -1,3 +1,4 @@
+from huggingface_hub import User
 import streamlit as st
 import pandas as pd
 import pdfplumber
@@ -8,6 +9,7 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain_core.output_parsers import StrOutputParser
 from CustomDocxBoiler import generate_docx
+import LLMLab45
 
 # Function to parse PDF
 def parse_pdf(file):
@@ -61,7 +63,10 @@ def run_llm_chain(resume):
     num_gpu=0
     )
 
+    #llama_model = LLMLab45.LlamaLLM()
+
     prompt_template = PromptTemplate(
+        
         input_variables=["resume"],
         template= """Could you please provide the following details based on {resume} and based your vast technical and analytical experience into below categories?
             Name: look for the candidate's name,
@@ -69,7 +74,8 @@ def run_llm_chain(resume):
             Phone: look for the phone number with 10 digits,
             Education: look for education information,
             Experience: Overall experience in years and experience description,
-            Skills: Technical skills worked and list the skills "," separated by"""
+            Skills: Technical skills worked and list the skills "," separated by
+            give me the output in json format"""
         )
 
     # Create LangChain LLMChain
@@ -78,7 +84,8 @@ def run_llm_chain(resume):
 
     # Run LLMChain
     result = llm_chain.run(resume=resume)
-    return parse_resume(parser.parse(result))
+
+    return result
 
 
 # Streamlit app
@@ -95,11 +102,14 @@ if uploaded_files:
             text = parse_docx(uploaded_file)
         parsed_data = run_llm_chain(text)
         data.append(parsed_data)
+        st.json(parsed_data) #
+        data.append(parsed_data)
+        #generate_docx(parsed_data)  # Uncommented to generate DOCX for each parsed resume
         
     if data:
         df = pd.DataFrame(data, index=None)
         st.dataframe(df)
-        generate_docx(df)
+        #generate_docx(df)
     else:
         st.warning("No valid resumes were parsed.")
     
