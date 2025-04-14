@@ -1,6 +1,13 @@
-plot(ts_essential,
-     main = "Time Series of Essential Skills Resources",
-     xlab = "Time",
-     ylab = "Number of Resources",
-     col = "blue",
-     lwd = 2)
+library(ggplot2)
+require(tidyverse)
+print("Hello world", quote = FALSE)
+
+
+data("mtcars")
+cars <- mtcars
+print(nrow(cars))
+print(head(cars, 10))
+
+x <- c(0:10)
+ggplot(data = cars, aes(x = weight, y = hindfoot_length)) +
+  geom_point()

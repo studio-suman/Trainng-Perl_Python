@@ -37,13 +37,13 @@ try:
         soup = BeautifulSoup(response.text, features="lxml")
 
         for anchor in soup.find_all("a"):
-            link = anchor.attrs['href'] if 'href' in anchor.attrs else ''
-            if link.startswith('/'):
-                link = base_url + link
-            elif not link.startswith('http'):
-                link = path + link
+            link = anchor.attrs['href'] if 'href' in anchor.attrs else '' # type: ignore
+            if link.startswith('/'): # type: ignore
+                link = base_url + link # type: ignore
+            elif not link.startswith('http'): # type: ignore
+                link = path + link # type: ignore
             if not link in urls and not link in scraped_urls:
-                urls.append(link)
+                urls.append(link) # type: ignore
 except KeyboardInterrupt:
     print('[-] Closing!')
 

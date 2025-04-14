@@ -26,7 +26,7 @@ starttime=time.time()
 
 data = pd.read_csv(infile, engine='python',sep=',', quotechar='"') 
 data = [['SR_ID','RESERVED','OPEN_POS','PROJECT_NAME','PROJECT_DESCRIPTION','SERVICE_LINE','PRACTICE','INVOICE_TYPE','JOBCODE','CONTRACTOR_JC','CUSTOMER_NAME','INDENT_STATUS','DEM_ST_DATE','DEM_END_DATE','TM_NAME','PM_NAME','ESSENTIAL_SKILL','DERIVED_INDENT_CITY','AREA','ACCOUNT_ID','ACCOUNT_TEXT','IFP_EMP_NO','IFP_EMP_NAME','ROLE_DESCRIPTION','SMU','Sector','SR_BAND','CUSTOMER_DISCUSSION_REQUIRED','EXECUTION_HUB','DEMAND_BU_SL','MIS_DUE_IN_CATEGORY','RLS_ID','DERIVED_INDENT_GEOGRAPHY','T&M/FPP','Derived Sector','Derived Practice V1','Derived Practice V2','Final SL_V10']]
-data.to_csv(outfiled, index=False)
+data.to_csv(outfiled, index=False) # type: ignore
 
 #End Time for Calculations
 time_calc(starttime)

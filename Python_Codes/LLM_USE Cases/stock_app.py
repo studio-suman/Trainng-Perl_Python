@@ -1,10 +1,10 @@
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc
+from dash import html
 import pandas as pd
 import plotly.graph_objs as go
 from dash.dependencies import Input, Output
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 
@@ -19,7 +19,7 @@ scaler=MinMaxScaler(feature_range=(0,1))
 df_nse = pd.read_csv("./NSE-TATA.csv")
 
 df_nse["Date"]=pd.to_datetime(df_nse.Date,format="%Y-%m-%d")
-df_nse.index=df_nse['Date']
+df_nse = df_nse.set_index('Date')
 
 
 data=df_nse.sort_index(ascending=True,axis=0)
@@ -29,7 +29,7 @@ for i in range(0,len(data)):
     new_data["Date"][i]=data['Date'][i]
     new_data["Close"][i]=data["Close"][i]
 
-new_data.index=new_data.Date
+new_data = new_data.set_index('Date')
 new_data.drop("Date",axis=1,inplace=True)
 
 dataset=new_data.values
@@ -165,7 +165,7 @@ app.layout = html.Div([
 
 @app.callback(Output('highlow', 'figure'),
               [Input('my-dropdown', 'value')])
-def update_graph(selected_dropdown):
+def update_highlow_graph(selected_dropdown):
     dropdown = {"TSLA": "Tesla","AAPL": "Apple","FB": "Facebook","MSFT": "Microsoft",}
     trace1 = []
     trace2 = []
