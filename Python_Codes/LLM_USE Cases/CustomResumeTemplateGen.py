@@ -74,7 +74,6 @@ def run_llm_chain(resume):
     #llama_model = LLMLab45.LlamaLLM()
 
     prompt_template = PromptTemplate(
-        
         input_variables=["resume"],
         template= """Could you please provide the following details based on {resume} and based your vast technical and analytical experience into below categories?
             Name: look for the candidate's name,

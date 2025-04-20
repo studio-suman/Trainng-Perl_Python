@@ -8,13 +8,15 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain_ollama import ChatOllama
 from CustomDocxBoilerv1 import generate_docx
+from LLMLab45 import LlamaLLM
 
- 
+
 # Define the Pydantic model for structured output
 class Resume(BaseModel):
     name: str = Field(..., description="The name of the candidate")
     email: str = Field(..., description="The email address of the candidate")
     phone: str = Field(..., description="The phone number of the candidate")
+    summary: str = Field(..., description="A brief summary of the candidate's profile")
     skills: List[str] = Field(..., description="A list of skills possessed by the candidate")
     experience: List[str] = Field(..., description="A list of work experiences of the candidate")
     education: List[str] = Field(..., description="A list of educational qualifications of the candidate")
@@ -27,6 +29,7 @@ prompt_template = PromptTemplate(
     - Name
     - Email
     - Phone
+    - Summary
     - Skills
     - Experience
     - Education
@@ -35,6 +38,7 @@ prompt_template = PromptTemplate(
     - name
     - email
     - phone
+    - summary
     - skills
     - experience
     - education
@@ -45,17 +49,19 @@ prompt_template = PromptTemplate(
 )
  
 # Initialize Ollama LLM
-llm = ChatOllama(
-    model="llama3.2:latest",
-    temperature=0
-)
- 
+# llm = ChatOllama(
+#     model="llama3.2:latest",
+#     temperature=0
+# )
+
+llm = LlamaLLM()
+
 # Create the LLM chain for resume parsing
-resume_parser_chain = LLMChain(
-    llm=llm,
-    prompt=prompt_template,
-)
- 
+# resume_parser_chain = LLMChain(
+#     llm=llm,
+#     prompt=prompt_template,
+# )
+
 # Streamlit application to upload resume and parse it
 st.title("Resume Parser")
  
@@ -82,21 +88,25 @@ if uploaded_file is not None:
                 doc = Document(uploaded_file)
                 resume_text = "\n".join([paragraph.text for paragraph in doc.paragraphs])
        
-        # Parse the resume using LLM chain
-        parsed_resume = resume_parser_chain.run(resume_text=resume_text)
-       
-        # Validate and clean the output
-        try:
-            # Ensure the output is valid JSON
-            resume_data = json.loads(parsed_resume)
-            resume_data = Resume.parse_obj(resume_data)
-            # Display parsed resume data
-            st.json(resume_data.dict())
-            generate_docx(resume_data)
-        except (json.JSONDecodeError, ValidationError) as e:
-            st.error(f"An error occurred while processing the resume: {e}")
-            st.write(f"Raw output: {parsed_resume}")
+            # Parse the resume using LLM chain
+            formatted_prompt = prompt_template.format(resume_text=resume_text)
+            parsed_resume = llm._call(prompt=formatted_prompt,user="user")
+            parsed_resume_dict = json.loads(parsed_resume)
+            parsed_result = parsed_resume_dict['data']['content']
+            # Validate and clean the output
+            try:
+                # Ensure the output is valid JSON
+                #resume_data = json.loads(parsed_resume)
+                #resume_data = Resume.parse_obj(resume_data)
+                # Display parsed resume data
+                #st.json(resume_data.dict())
+                #generate_docx(resume_data)
+                st.write(parsed_resume)
+            except (json.JSONDecodeError, ValidationError) as e:
+                st.error(f"An error occurred while processing the resume: {e}")
+                st.write(f"Raw output: {parsed_result}")
     except Exception as e:
         st.error(f"An error occurred while reading the resume: {e}")
+        st.json(f"Raw output: {parsed_resume}")
 else:
     st.info("Please upload a resume to parse.")
