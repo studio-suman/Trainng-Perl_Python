@@ -1,10 +1,10 @@
+import streamlit as st
 from pydantic import BaseModel, Field, ValidationError
 from typing import List, Dict
-import streamlit as st
-from docx import Document
 import pdfplumber
 import json
 from langchain.prompts import PromptTemplate
+from docx import Document
 from doc3 import generate_formatted_resume
 from LLMLab45 import LlamaLLM
 
@@ -32,13 +32,13 @@ prompt_template = PromptTemplate(
     - Education
 
     Provide the output in JSON format with the following keys:
-    - name
-    - email
-    - phone
-    - summary
-    - skills
-    - experience
-    - education
+    - Name
+    - Email
+    - Phone
+    - Summary
+    - Skills
+    - Experience
+    - Education
 
     Resume text:
     {resume_text}
@@ -77,20 +77,22 @@ def parse_resume(resume_text):
         st.error(f"An error occurred while parsing the resume: {e}")
         return None
 
+# Streamlit application to upload resumes and parse them
+st.title("ResuMatic")
 
-# Streamlit application to upload resume and parse it
-st.title("Resume Parser")
+uploaded_files = st.file_uploader("Upload your resumes", type=["pdf", "docx"], accept_multiple_files=True)
 
-uploaded_file = st.file_uploader("Upload your resume", type=["txt", "pdf", "docx"])
-
-if uploaded_file is not None:
-    resume_text = read_resume(uploaded_file)
-    if resume_text:
-        parsed_result = parse_resume(resume_text)
-        #print(parsed_result)
-        if parsed_result:
-            st.json(parsed_result)  
-            generate_formatted_resume(parsed_result, 'formatted_resume.docx')
-            st.success("Resume generated successfully!")
+if uploaded_files:
+    parsed_results = []
+    for uploaded_file in uploaded_files:
+        resume_text = read_resume(uploaded_file)
+        if resume_text:
+            parsed_result = parse_resume(resume_text)
+            if parsed_result:
+                parsed_results.append(parsed_result)
+                generate_formatted_resume(parsed_result)  
+    if parsed_results:
+        st.json(parsed_results)
+        st.success("Resumes generated successfully!")
 else:
-    st.info("Please upload a resume to parse.")
+    st.info("Please upload resumes to parse.")
