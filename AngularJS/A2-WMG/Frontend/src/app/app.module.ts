@@ -12,14 +12,8 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { environment } from 'src/environments/environment.prod';
 import { BodyPrimaryComponent } from './body-primary/body-primary.component';
 
-
-
 @NgModule({
-  declarations: [
-    AppComponent,
-    NavComponent,
-    BodyPrimaryComponent
-  ],
+  declarations: [AppComponent, NavComponent, BodyPrimaryComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -27,9 +21,9 @@ import { BodyPrimaryComponent } from './body-primary/body-primary.component';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFirestoreModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

@@ -32,7 +32,7 @@ def generate_formatted_resume(parsed_result): # type: ignore
 
         
         # Add name
-        title = doc.add_heading(data['Name'], level=1)
+        title = doc.add_heading(data['Name'], level=0)
         title.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
         #Adding Line as Seperator   

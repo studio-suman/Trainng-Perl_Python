@@ -29,6 +29,8 @@ prompt_template = PromptTemplate(
     - Summary
     - Skills
     - Experience with Roles and Responsibilities
+    - Functional Capabilities
+    - Business Capabilities
     - Education
 
     Provide the output in JSON format with the following keys:
@@ -38,6 +40,8 @@ prompt_template = PromptTemplate(
     - Summary
     - Skills
     - Experience
+    - Functional Capabilities
+    - Business Capabilities
     - Education
 
     Resume text:
@@ -66,7 +70,7 @@ def read_resume(uploaded_file):
 
 def parse_resume(resume_text):
     try:
-        summarised_text = llm._call("Kindly provide summary of profile, ensuring to include full name, email address, phone number, only single list of technical skills without categorizing, details of business capabilities, an overview of functional capabilities and complete professional experience along with roles and responsibilities if any" + resume_text, user="user")
+        summarised_text = llm._call("Kindly provide summary of profile, ensuring to include full name, email address, phone number, only single list of technical skills without categorizing, details of business capabilities, functional capabilities, an overview of functional capabilities and complete professional experience along with roles and responsibilities if any" + resume_text, user="user")
         formatted_prompt = prompt_template.format(resume_text=summarised_text)
         parsed_resume = llm._call(prompt=formatted_prompt, user="user")
         if isinstance(parsed_resume, dict):
@@ -83,16 +87,17 @@ st.title("ResuMatic")
 uploaded_files = st.file_uploader("Upload your resumes", type=["pdf", "docx"], accept_multiple_files=True)
 
 if uploaded_files:
-    parsed_results = []
-    for uploaded_file in uploaded_files:
-        resume_text = read_resume(uploaded_file)
-        if resume_text:
-            parsed_result = parse_resume(resume_text)
-            if parsed_result:
-                parsed_results.append(parsed_result)
-                generate_formatted_resume(parsed_result)  
-    if parsed_results:
-        st.json(parsed_results)
-        st.success("Resumes generated successfully!")
+    with st.spinner("Processing resumes..."):
+        parsed_results = []
+        for uploaded_file in uploaded_files:
+            resume_text = read_resume(uploaded_file)
+            if resume_text:
+                parsed_result = parse_resume(resume_text)
+                if parsed_result:
+                    parsed_results.append(parsed_result)
+                    generate_formatted_resume(parsed_result)  
+        if parsed_results:
+            st.json(parsed_results)
+            st.success("Resumes generated successfully!")
 else:
-    st.info("Please upload resumes to parse.")
+    st.info("Please upload resumes to process.")
