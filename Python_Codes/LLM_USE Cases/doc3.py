@@ -4,6 +4,7 @@ from typing import List, Dict
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
+import io
 
 path= r"D:\OneDrive - Wipro\Desktop\Trainng-Perl_Python\Python_Codes\LLM_USE Cases\\"
 
@@ -55,6 +56,9 @@ def generate_formatted_resume(parsed_result): # type: ignore
 
         # Save the document
         doc.save(path+f'Structured_Resume-{data['Name']}.docx')
+        ai_out = io.BytesIO()
+        doc.save(ai_out)
+        return ai_out.getvalue()
     except Exception as e:
         print(f"An error occurred while generating the resume: {e}")
 
@@ -82,3 +86,8 @@ def generate_formatted_resume(parsed_result): # type: ignore
         # doc.add_heading("Education", level=2)
         # for edu in parsed_result['education']:
         #     doc.add_paragraph(edu)
+
+    
+    # except Exception as e:
+    #     print(f"An error occurred while generating the resume: {e}")
+    #     return None

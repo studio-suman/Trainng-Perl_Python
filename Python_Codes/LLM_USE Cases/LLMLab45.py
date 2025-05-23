@@ -53,7 +53,9 @@ class LlamaLLM(LLM):
         },
         "stream_response": False
         }
+        #os.environ["TOKEN"] = "Bearer token|1f9b0b2b-dcb7-4e85-aec3-5a04a5eb25ab|84585ddcc6f8fc5a6872c417e46de733525ba1bc8b0376f69b56e4b0257df6da"
         token = os.getenv("TOKEN")
+        print(token)
         headers = {"Content-Type": "application/json","Authorization": token}
 
         response = requests.post(self.llm_url, json=payload, headers=headers, verify=False)

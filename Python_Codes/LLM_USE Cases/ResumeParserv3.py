@@ -1,76 +1,160 @@
 import streamlit as st
-from langchain.chains import LLMChain
-from langchain_ollama import ChatOllama
-from langchain.prompts import PromptTemplate
-from typing import TypedDict, Annotated
+from docx import Document
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml.ns import qn
+from docx.oxml import OxmlElement
 import pdfplumber
-from langchain_core.output_parsers import StrOutputParser
-from LLMLab45 import LlamaLLM
+import json
+import os
+from generate_resume import generate_formatted_resume_layout2_with_dividers
+from pydantic import BaseModel
+from typing import List
+from langchain.prompts import PromptTemplate
+from LLM45 import LlamaLLM  # Your custom LLM wrapper
  
-# Initialize Ollama LLM
-llm = ChatOllama(
-    model="llama3.2:latest",
-    temperature=0
+# Define the Pydantic model for structured output
+class Resume(BaseModel):
+    name: str
+    email: str
+    phone: str
+    summary: str
+    skills: List[str]
+    certifications: List[str]
+    experience: List[dict]
+    education: List[dict]
+ 
+# Prompt template for resume parsing
+prompt_template = PromptTemplate(
+    input_variables=["resume_text"],
+    template="""
+    Extract the following information from the resume:
+    - Name
+    - Email
+    - Phone
+    - Linkedin Look for any linkedin.com profile mentioned in the resume
+    - Summary
+    - Skills
+    - Certifications
+    - Experience with Roles and Responsibilities
+    - Education OR Academic Profile
+ 
+    Provide the output in JSON format with the following keys:
+    - Name
+    - Email
+    - Phone
+    - Linkedin
+    - Summary
+    - Skills
+    - Certifications
+    - Experience
+    - Education
+ 
+    For each experience, extract:
+    - Title
+    - Company
+    - Duration
+    - Roles and Responsibilities (as a list)
+ 
+    For each education entry, extract:
+    - Degree
+    - Institution
+    - Duration or Year
+ 
+    Resume text:
+    {resume_text}
+    """
 )
-
+ 
+# Initialize LLM
 llm = LlamaLLM()
-
-class Parser_Resume(TypedDict):
-    Summary: Annotated[str,"""Please review the resume and provide a concise summary of the candidate's
-    key qualifications, experiences, and achievements.. The summary should be brief, clear, and to the point."""]
-    mail_id: Annotated[str,"First Occurrence of Mail ID"]
-    skills: Annotated[list[str],""""Please review the resume and list the skills mentioned by the candidate.
-                                    Focus on  technical skills, including any specific tools, technologies, languages,
-                                    or methodologies they are proficient in. Ensure to include any certifications or training that
-                                    highlight their expertise."""]
-    Business_Capabilities: Annotated[list[str],"""
-                                    Please review the resume and identify the key business capabilities demonstrated by the candidate.
-                                    Focus on skills, experiences, and achievements that highlight their ability to contribute to business operations, strategy, and growth.
-                                    Consider aspects such as leadership, project management, financial acumen, strategic planning, and any industry-specific expertise."""]
-    Functional_Capabilities: Annotated[list[str],"""
-                                    Please review the resume and identify the key functional capabilities demonstrated by the candidate.
-                                    Focus on skills, experiences, and achievements that highlight their ability to contribute to business operations, strategy, and growth.
-                                    Consider aspects such as leadership, project management, financial acumen, strategic planning, and any industry-specific expertise."""]
-    Education: Annotated[list[str],"""Please review the resume and provide the education details of the candidate.
-                                      Focus on the degrees obtained, institutions attended, graduation dates, and any
-                                      relevant certifications or courses completed. Ensure to include any honors or distinctions received."""]
-    professional_experience: Annotated[list[str],""""Please review the resume and provide the professional experience details of the candidate.
-                                      Focus on the job titles, companies worked for, employment dates, and key responsibilities and achievements in each role.
-                                      Highlight any significant projects, leadership roles, and contributions that demonstrate the candidate's expertise and impact in their field."""]
-    clients: Annotated[list[str],""""Please review the resume and provide a list of previous clients the candidate has worked with.
-                                                  Focus on the client names, industries, and the nature of the projects or services provided.
-                                                  Highlight any significant achievements or contributions made by the candidate while working with these clients."""]
  
-structured_model = llm.with_structured_output(Parser_Resume)
+def read_resume(uploaded_file):
+    try:
+        if uploaded_file.type == "text/plain":
+            return uploaded_file.read().decode("utf-8")
+        elif uploaded_file.type == "application/pdf":
+            with pdfplumber.open(uploaded_file) as pdf:
+                return "".join([page.extract_text() for page in pdf.pages if page.extract_text()])
+        elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+            doc = Document(uploaded_file)
+            return "\n".join([paragraph.text for paragraph in doc.paragraphs])
+        else:
+            raise ValueError("Unsupported file type")
+    except Exception as e:
+        st.error(f"Error reading resume: {e}")
+        return None
  
-# Streamlit application
-st.title("Resume Parser")
+def parse_resume(resume_text):
+    try:
+        summarised_text = llm._call(
+            "Kindly provide summary of profile, ensuring to include full name, email address, phone number, only single list of technical skills without categorizing, details of business capabilities, an overview of functional capabilities and complete professional experience along with roles and responsibilities if any" + resume_text,
+            user="user"
+        )
+        formatted_prompt = prompt_template.format(resume_text=summarised_text)
+        parsed_resume = llm._call(prompt=formatted_prompt, user="user")
  
-uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
+        if isinstance(parsed_resume, str):
+            parsed_resume = json.loads(parsed_resume)
+ 
+        if isinstance(parsed_resume, dict) and "data" in parsed_resume and "content" in parsed_resume["data"]:
+            parsed_resume = parsed_resume["data"]["content"]
+ 
+        return parsed_resume
+    except Exception as e:
+        st.error(f"Error parsing resume: {e}")
+        return None
+ 
+# Streamlit UI
+st.title("📄 Resume Parser")
+ 
+uploaded_file = st.file_uploader("Upload your resume", type=["txt", "pdf", "docx"])
+ 
+parsed_result = None
  
 if uploaded_file is not None:
+    with st.spinner("Reading and parsing resume..."):
+        resume_text = read_resume(uploaded_file)
+        if resume_text:
+            parsed_result = parse_resume(resume_text)
+ 
+if parsed_result:
+    if isinstance(parsed_result, str):
+        try:
+            parsed_result = json.loads(parsed_result)
+        except json.JSONDecodeError as e:
+            st.error(f"Failed to decode parsed result: {e}")
+            st.stop()
+ 
+    if not isinstance(parsed_result, dict):
+        st.error("Parsed result is not a dictionary. Cannot proceed.")
+        st.stop()
+ 
+    if 'Name' not in parsed_result:
+        st.error("The 'Name' field is missing in the parsed result.")
+        st.stop()
+ 
+    st.subheader("📋 Parsed Resume Data")
+    st.json(parsed_result)
+ 
+    # Save and offer download
+    save_path = os.path.join(os.path.expanduser("~"), "Documents", "resumeparser")
+    os.makedirs(save_path, exist_ok=True)
+ 
     try:
-        # Read the PDF file using pdfplumber
-        with pdfplumber.open(uploaded_file) as pdf:
-            text = ""
-            for page in pdf.pages:
-                text += page.extract_text()
-       
-        if text:
-            # Summarize the text before giving it to the LLM to create structured output
-            summarised_text = llm.invoke("Kindly provide a comprehensive summary of your profile, ensuring to include your full name, email address, phone number, a list of your skills, details of your business capabilities, an overview of your functional capabilities, and a summary of your professional experience" + text)
-            summarised_text_struc = summarised_text  # Use the summarised text directly as it is a string
-            st.text_area("Summarized Text", summarised_text_struc, height=400)
-           
-            # Store the text in the resume variable
-            resume = summarised_text_struc
-           
-            # Invoke the structured model with the resume text
-            result = structured_model.invoke(resume)
-            st.write(result)
+        resume_json = json.dumps(parsed_result)
+        file_path = generate_formatted_resume_layout2_with_dividers(resume_json, save_path)
+ 
+        if file_path:
+            file_name = os.path.basename(file_path)
+            with open(file_path, "rb") as f:
+                st.download_button(
+                    label="⬇️ Download Formatted Resume",
+                    data=f.read(),
+                    file_name=file_name,
+                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                )
+            st.success("Resume generated and ready for download!")
         else:
-            st.error("Failed to extract text from the PDF. Please upload a valid resume.")
+            st.error("Failed to generate resume. Please check the logs or try again.")
     except Exception as e:
-        st.error(f"An error occurred: {e}")
-else:
-    st.info("Please upload a PDF file to proceed.")
+        st.error(f"Error generating or downloading resume: {e}")

@@ -1,4 +1,5 @@
 import streamlit as st
+from dotenv import load_dotenv
 from pydantic import BaseModel, Field, ValidationError
 from typing import List, Dict
 import pdfplumber
@@ -7,7 +8,9 @@ from langchain.prompts import PromptTemplate
 from docx import Document
 from doc3 import generate_formatted_resume
 from LLMLab45 import LlamaLLM
+import time
 
+load_dotenv()
 # Define the Pydantic model for structured output
 class Resume(BaseModel):
     name: str = Field(..., description="The name of the candidate")
@@ -99,5 +102,6 @@ if uploaded_files:
         if parsed_results:
             st.json(parsed_results)
             st.success("Resumes generated successfully!")
+    
 else:
     st.info("Please upload resumes to process.")

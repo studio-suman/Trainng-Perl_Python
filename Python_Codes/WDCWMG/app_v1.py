@@ -45,7 +45,7 @@ llm = AzureChatOpenAI(
     azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT"),
     azure_deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
     api_version = os.getenv("OPENAI_API_VERSION"),
-    temperature= temp
+    temperature= temp # type: ignore
 )
 
 parser = StrOutputParser()
