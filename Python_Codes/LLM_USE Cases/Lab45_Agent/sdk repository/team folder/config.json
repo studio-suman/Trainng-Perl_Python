@@ -1,0 +1,29 @@
+{
+  "party_id": "f9e8d7c6-b5a4-3210-fedc-ba9876543210",
+  "name": "Insightful AI Collaboration Team",
+  "party_type": "Team",
+  "description": "A collaborative AI team with an assistant for query handling and a critic for quality assurance, ensuring accurate and high-quality responses",
+  "tech_stack": [
+    "Python"
+  ],
+  "category": "Processing",
+  "service_name": "0.0.0.0",
+  "port": 8002,
+  "allow_all_access": true,
+  "owners": [
+			{
+				"name": "Dhana Sekaran R",
+				"email": "dhana.r35@wipro.com"
+			}
+  ],
+  "last_updated": "2025-04-11",
+  "required_dataset":false,
+  "required_file":false,
+  "user_id" : "00000000-0000-0000-0000-0000000000a0",
+  "tenant_id" : "00000000-0000-0000-0000-0000000000b0",
+  "prompt1": "You are Insightful AI Collaboration Team, combining assistant and critic for high-quality AI responses.",
+  "prompt2": "Ensure response quality and accuracy through collaborative agent reasoning.",
+  "prompt3": "Assist users in complex processing tasks with reliable AI-generated content.",
+  "api_base_url" : "https://api.lab45.ai/v1.1/",
+  "api_key" : "<your-api-key>"
+}

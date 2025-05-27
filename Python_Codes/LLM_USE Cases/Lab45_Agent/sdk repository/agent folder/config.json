@@ -1,0 +1,31 @@
+{
+  "party_id": "<enter uuid>",
+  "party_type": "<specify either Agent or Team>",
+  "name": "<agent or team name>",
+  "description": "<agent description>",
+  "tech_stack": [
+    "Python"
+  ],
+  "category": "GenAI",
+  "service_name": "0.0.0.0",
+  "port": 8001,
+  "allow_all_access": true,
+  "owners": [
+			{
+				"name": "<your name>",
+				"email": "<outlook email id>"
+			},
+			{
+				"name": "<other owner name>",
+				"email": "<outlook email id>"
+			}
+  ],
+  "last_updated": "<date of updation in format YYYY-MM-DD>",
+  "required_dataset":<false or true>,
+  "required_file":<false or true>,
+  "prompt1": "<test prompt 1>",
+  "prompt2": "<test prompt 2>",
+  "prompt3": "<test prompt 3>",
+  "api_base_url" : "https://api.lab45.ai/v1.1/",
+  "api_key" : "<your-api-key>"
+}

@@ -1,17 +1,18 @@
+import io
 import os
 import json
 import re
 import logging
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 from docx.shared import Inches
-from docx.shared import Pt
+from docx.shared import Pt, RGBColor
  
  
 # Configure logging
-logging.basicConfig(filename='resume_generator.log', level=logging.DEBUG, format='%(asctime)s:%(levelname)s:%(message)s')
+logging.basicConfig(filename='resume_generator.log', level=logging.ERROR, format='%(asctime)s:%(levelname)s:%(message)s')
  
 def add_horizontal_line(paragraph):
     p = paragraph._p
@@ -25,7 +26,7 @@ def add_horizontal_line(paragraph):
     pBdr.append(bottom)
     pPr.append(pBdr)
  
-def generate_formatted_resume_layout1(parsed_result, path):
+def layout1(parsed_result, path):
     try:
         if not os.path.exists(path):
             os.makedirs(path)
@@ -122,7 +123,7 @@ def generate_formatted_resume_layout1(parsed_result, path):
     except Exception as e:
         logging.error(f"An error occurred while generating the resume: {e}")
         return None
-def generate_formatted_resume_layout2(parsed_result, path):
+def layout2(parsed_result, path):
     try:
         if not os.path.exists(path):
             os.makedirs(path)
@@ -162,25 +163,24 @@ def generate_formatted_resume_layout2(parsed_result, path):
             left_cell.add_paragraph(info)
  
         if data.get("Skills"):
-            skills_para = left_cell.add_paragraph("Skills")
-            skills_para.runs[0].bold = True
+            left_cell.add_paragraph("Skills").bold = True # type: ignore
             for skill in data.get("Skills", []):
                 left_cell.add_paragraph(skill, style='List Bullet')
  
         # RIGHT MAIN SECTION
         if data.get("Summary"):
-            right_cell.add_paragraph("Summary").bold = True
+            right_cell.add_paragraph("Summary").bold = True # type: ignore
             right_cell.add_paragraph(data["Summary"])
  
         if data.get("Education"):
-            right_cell.add_paragraph("Education").bold = True
+            right_cell.add_paragraph("Education").bold = True # type: ignore
             for edu in data.get("Education", []):
                 p = right_cell.add_paragraph()
                 p.add_run(f"{edu.get('Degree', '')} in {edu.get('Field', '')}").bold = True
                 p.add_run(f"\n{edu.get('Institution', '')}")
  
         if data.get("Experience"):
-            right_cell.add_paragraph("Experience").bold = True
+            right_cell.add_paragraph("Experience").bold = True # type: ignore
             for exp in data.get("Experience", []):
                 p = right_cell.add_paragraph()
                 p.add_run(exp.get("Title", "")).bold = True
@@ -199,20 +199,21 @@ def generate_formatted_resume_layout2(parsed_result, path):
         filename = f"formatted_resume_layout2-{safe_name}.docx"
         full_path = os.path.join(path, filename)
         doc.save(full_path)
- 
-        return full_path
+        ai_out = io.BytesIO()
+        return full_path, ai_out.getvalue()
  
     except Exception as e:
         logging.error(f"An error occurred while generating layout 2 resume: {e}")
         return None
  
+ 
 def add_horizontal_divider(doc, text="────────────"):
     para = doc.add_paragraph(text)
-    para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    para.alignment = WD_ALIGN_PARAGRAPH.LEFT
     run = para.runs[0]
     run.bold = True
  
-def generate_formatted_resume_layout2_with_dividers(parsed_result, path):
+def layout4(parsed_result, path):
     try:
         if not os.path.exists(path):
             os.makedirs(path)
@@ -228,8 +229,12 @@ def generate_formatted_resume_layout2_with_dividers(parsed_result, path):
         # Create a two-column layout
         table = doc.add_table(rows=1, cols=2)
         table.autofit = False
-        table.columns[0].width = Inches(2)
-        table.columns[1].width = Inches(4.5)
+       
+        # Set fixed widths for each cell in the columns
+        for cell in table.columns[0].cells:
+            cell.width = Inches(2) # Sidebar
+        for cell in table.columns[1].cells:
+            cell.width = Inches(4.5) # Main content
  
         left_cell = table.cell(0, 0)
         right_cell = table.cell(0, 1)
@@ -239,7 +244,7 @@ def generate_formatted_resume_layout2_with_dividers(parsed_result, path):
         run = name_para.add_run(data.get("Name", "Unnamed"))
         run.bold = True
         run.font.size = Pt(14)
-        name_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        name_para.alignment = WD_ALIGN_PARAGRAPH.LEFT
  
         contact_info = [
             data.get("Email", ""),
@@ -251,18 +256,22 @@ def generate_formatted_resume_layout2_with_dividers(parsed_result, path):
             left_cell.add_paragraph(info)
  
         if data.get("Skills"):
-            add_horizontal_divider(left_cell)
             heading = left_cell.add_paragraph("Skills")
             heading.runs[0].bold = True
+            heading.runs[0].add_break(break_type=WD_BREAK.LINE)
+            heading.runs[0].add_text(text = "────────────")
             heading.runs[0].font.size = Pt(14)
+            ## add_horizontal_divider(left_cell)
             for skill in data["Skills"]:
                 left_cell.add_paragraph(skill, style='List Bullet')
  
         # RIGHT MAIN SECTION
         def add_section(cell, title, content):
-            add_horizontal_divider(cell)
+            ## add_horizontal_divider(cell)
             heading = cell.add_paragraph(title)
             heading.runs[0].bold = True
+            heading.runs[0].add_break(break_type=WD_BREAK.LINE)
+            heading.runs[0].add_text(text = "────────────")
             heading.runs[0].font.size = Pt(14)
             if isinstance(content, str):
                 cell.add_paragraph(content)
@@ -306,6 +315,135 @@ def generate_formatted_resume_layout2_with_dividers(parsed_result, path):
         logging.error(f"An error occurred while generating the resume: {e}")
         return None
  
+ 
+def set_cell_background(cell, color):
+    tc = cell._tc
+    tcPr = tc.get_or_add_tcPr()
+    shd = OxmlElement('w:shd')
+    shd.set(qn('w:fill'), color) # Hex color code, e.g., 'D9E1F2' for light blue
+    tcPr.append(shd)
+varR1=0x4F
+varG1=0x81
+varB1=0xBD
+varR2=0x17
+varG2=0x36
+varB2=0x5D
+ 
+def layout3(parsed_result, path):
+    try:
+        if not os.path.exists(path):
+            os.makedirs(path)
+        if isinstance(parsed_result, str):
+            data = json.loads(parsed_result)
+        elif isinstance(parsed_result, dict):
+            data = parsed_result
+        else:
+            raise ValueError("parsed_result must be a JSON string or a dictionary")
+ 
+        doc = Document()
+ 
+        # Create a two-column layout
+        table = doc.add_table(rows=1, cols=1)
+        table.autofit = False
+ 
+        top_cell = table.cell(0, 0)
+ 
+         # Apply light blue background to sidebar
+        set_cell_background(top_cell, 'D9E1F2')
+ 
+        # Name
+        name_para = top_cell.paragraphs[0]
+        run = name_para.add_run(data.get("Name", "Unnamed"))
+        run.bold = True
+        run.font.size = Pt(14)
+        run.font.color.rgb= RGBColor(varR1, varG1, varB1)
+        name_para.alignment = WD_ALIGN_PARAGRAPH.LEFT
+ 
+        contact_info = [
+            data.get("Email", ""),
+            data.get("Phone", ""),
+            data.get("LinkedIn", ""),
+            data.get("Address", "")
+        ]
+        for info in contact_info:
+            top_cell.add_paragraph(info)
+ 
+        # Create a two-column layout
+        table = doc.add_table(rows=1, cols=2)
+        table.autofit = False
+       
+        # Set fixed widths for each cell in the columns
+        for cell in table.columns[0].cells:
+            cell.width = Inches(2) # Sidebar
+        for cell in table.columns[1].cells:
+            cell.width = Inches(4.5) # Main content
+ 
+        left_cell = table.cell(0, 0)
+        right_cell = table.cell(0, 1)
+ 
+        if data.get("Skills"):
+            heading = left_cell.add_paragraph("Skills")
+            heading.runs[0].bold = True
+            heading.runs[0].add_break(break_type=WD_BREAK.LINE)
+            heading.runs[0].add_text(text = "────────────")
+            heading.runs[0].font.size = Pt(14)
+            heading.runs[0].font.color.rgb= RGBColor(varR2, varG2, varB2)
+            ## add_horizontal_divider(left_cell)
+            for skill in data["Skills"]:
+                left_cell.add_paragraph(skill, style='List Bullet')
+ 
+        # RIGHT MAIN SECTION
+        def add_section(cell, title, content):
+            ## add_horizontal_divider(cell)
+            heading = cell.add_paragraph(title)
+            heading.runs[0].bold = True
+            heading.runs[0].add_break(break_type=WD_BREAK.LINE)
+            heading.runs[0].add_text(text = "────────────")
+            heading.runs[0].font.size = Pt(14)
+            heading.runs[0].font.color.rgb= RGBColor(varR2, varG2, varB2)
+            if isinstance(content, str):
+                cell.add_paragraph(content)
+            elif isinstance(content, list):
+                for item in content:
+                    cell.add_paragraph(item)
+ 
+        if data.get("Summary"):
+            add_section(right_cell, "Summary", data["Summary"])
+ 
+        if data.get("Education"):
+            add_section(right_cell, "Education", [])
+            for edu in data["Education"]:
+                p = right_cell.add_paragraph()
+                p.add_run(f"{edu.get('Degree', '')} in {edu.get('Field', '')}").bold = True
+                p.add_run(f"\n{edu.get('Institution', '')}")
+ 
+        if data.get("Experience"):
+            add_section(right_cell, "Experience", [])
+            for exp in data["Experience"]:
+                p = right_cell.add_paragraph()
+                p.add_run(exp.get("Title", "")).bold = True
+                p.add_run(f"\n{exp.get('Company', '')} | {exp.get('Duration', '')}")
+                for role in exp.get("Roles and Responsibilities", []):
+                    right_cell.add_paragraph(role, style='List Bullet')
+                   
+    # Footer
+        footer = doc.sections[0].footer
+        footer_para = footer.paragraphs[0]
+        footer_para.text = "Generated by LLM Resume Parser"
+        footer_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+ 
+    # Save
+        safe_name = re.sub(r'[\\/*?:"<>|]', "", data.get('Name', 'Unnamed'))
+        filename = f"formatted_resume-{safe_name}.docx"
+        full_path = os.path.join(path, filename)
+        doc.save(full_path)
+        return full_path
+   
+    except Exception as e:
+        logging.error(f"An error occurred while generating the resume: {e}")
+        return None
+
+#Old Code - Redundant   
 def generate_formatted_resume(parsed_result, path):
     try:
         if not os.path.exists(path):

@@ -1,0 +1,7 @@
+2025-05-26 14:08:34,882:ERROR:An error occurred while generating the resume: 'NoneType' object has no attribute 'get'
+2025-05-26 14:09:23,777:ERROR:An error occurred while generating the resume: 'NoneType' object has no attribute 'get'
+2025-05-26 14:09:23,795:ERROR:An error occurred while generating layout 2 resume: 'NoneType' object has no attribute 'get'
+2025-05-26 14:09:23,811:ERROR:An error occurred while generating the resume: 'NoneType' object has no attribute 'get'
+2025-05-26 14:11:47,869:ERROR:An error occurred while generating the resume: 'str' object has no attribute 'get'
+2025-05-26 14:11:48,215:ERROR:An error occurred while generating layout 2 resume: 'str' object has no attribute 'get'
+2025-05-26 14:11:48,579:ERROR:An error occurred while generating the resume: 'str' object has no attribute 'get'

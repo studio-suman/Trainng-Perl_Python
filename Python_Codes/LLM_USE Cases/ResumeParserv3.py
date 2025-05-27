@@ -6,76 +6,179 @@ from docx.oxml import OxmlElement
 import pdfplumber
 import json
 import os
-from generate_resume import generate_formatted_resume_layout2_with_dividers
+from generate_resume import layout1, layout2, layout3
 from pydantic import BaseModel
 from typing import List
 from langchain.prompts import PromptTemplate
-from LLM45 import LlamaLLM  # Your custom LLM wrapper
+from LLMLab45 import LlamaLLM  # Your custom LLM wrapper
  
-# Define the Pydantic model for structured output
-class Resume(BaseModel):
-    name: str
-    email: str
-    phone: str
-    summary: str
-    skills: List[str]
-    certifications: List[str]
-    experience: List[dict]
-    education: List[dict]
+# # Define the Pydantic model for structured output
+# class Resume(BaseModel):
+#     name: str
+#     email: str
+#     phone: str
+#     linkedin: str
+#     summary: str
+#     skills: List[str]
+#     certifications: List[str]
+#     experience: List[dict]
+#     education: List[dict]
  
-# Prompt template for resume parsing
-prompt_template = PromptTemplate(
-    input_variables=["resume_text"],
-    template="""
-    Extract the following information from the resume:
-    - Name
-    - Email
-    - Phone
-    - Linkedin Look for any linkedin.com profile mentioned in the resume
-    - Summary
-    - Skills
-    - Certifications
-    - Experience with Roles and Responsibilities
-    - Education OR Academic Profile
+# # Prompt template for resume parsing
+# prompt_template = PromptTemplate(
+#     input_variables=["resume_text"],
+#     template="""
+#     Extract the following information from the resume:
+#     - Name
+#     - Email
+#     - Phone
+#     - Linkedin Look for any linkedin.com profile mentioned in the resume
+#     - Summary
+#     - Skills
+#     - Certifications
+#     - Experience with Roles and Responsibilities
+#     - Education OR Academic Profile
  
-    Provide the output in JSON format with the following keys:
-    - Name
-    - Email
-    - Phone
-    - Linkedin
-    - Summary
-    - Skills
-    - Certifications
-    - Experience
-    - Education
+#     Provide the output in JSON format with the following keys:
+#     - Name
+#     - Email
+#     - Phone
+#     - Linkedin
+#     - Summary
+#     - Skills
+#     - Certifications
+#     - Experience
+#     - Education
  
-    For each experience, extract:
-    - Title
-    - Company
-    - Duration
-    - Roles and Responsibilities (as a list)
+#     For each experience, extract:
+#     - Title
+#     - Company
+#     - Duration
+#     - Roles and Responsibilities (as a list)
  
-    For each education entry, extract:
-    - Degree
-    - Institution
-    - Duration or Year
+#     For each education entry, extract:
+#     - Degree
+#     - Institution
+#     - Duration or Year
  
-    Resume text:
-    {resume_text}
-    """
-)
+#     Resume text:
+#     {resume_text}
+#     """
+# )
  
 # Initialize LLM
 llm = LlamaLLM()
- 
-def read_resume(uploaded_file):
+
+sample_code = """
+def layout1(parsed_result, path):
     try:
-        if uploaded_file.type == "text/plain":
-            return uploaded_file.read().decode("utf-8")
-        elif uploaded_file.type == "application/pdf":
-            with pdfplumber.open(uploaded_file) as pdf:
-                return "".join([page.extract_text() for page in pdf.pages if page.extract_text()])
-        elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+        if not os.path.exists(path):
+            os.makedirs(path)
+           
+        #JSON string or a dictionary
+        if isinstance(parsed_result, str):
+            data = json.loads(parsed_result)
+        elif isinstance(parsed_result, dict):
+            data = parsed_result
+        else:
+            raise ValueError("parsed_result must be a JSON string or a dictionary")
+ 
+        doc = Document()
+ 
+        # Title
+        title_para = doc.add_paragraph(data.get("Name", "Unnamed"))
+        title_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        title_para.style = 'Title'
+ 
+        # Contact Information
+        contact_info = [
+            data.get("Email", ""),
+            data.get("Phone", ""),
+            data.get("LinkedIn", ""),
+            data.get("Address", "")
+        ]
+        contact_para = doc.add_paragraph("\n".join(contact_info))
+        contact_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        add_horizontal_line(doc.add_paragraph())
+ 
+        # Summary
+        if data.get("Summary"):
+            doc.add_heading("Summary", level=2)
+            doc.add_paragraph(data["Summary"])
+        add_horizontal_line(doc.add_paragraph())
+ 
+        # Education
+        if data.get("Education"):
+            doc.add_heading("Education", level=2)
+            table = doc.add_table(rows=1, cols=3)
+            table.style = 'Table Grid'
+            hdr_cells = table.rows[0].cells
+            hdr_cells[0].text = 'Institution'
+            hdr_cells[1].text = 'Degree'
+            hdr_cells[2].text = 'Field'
+            for edu in data.get("Education") or []:
+                row_cells = table.add_row().cells
+                row_cells[0].text = edu.get('Institution', '')
+                row_cells[1].text = edu.get('Degree', '')
+                row_cells[2].text = edu.get('Field', '')
+            add_horizontal_line(doc.add_paragraph())
+ 
+        # Skills
+        if data.get("Skills"):
+            doc.add_heading("Skills", level=2)
+            for skill in data.get("Skills", []):
+                doc.add_paragraph(skill, style='List Bullet')
+            add_horizontal_line(doc.add_paragraph())
+ 
+        # Experience
+        if data.get("Experience"):
+            doc.add_heading("Experience", level=2)
+            table = doc.add_table(rows=1, cols=4)
+            table.style = 'Table Grid'
+            hdr_cells = table.rows[0].cells
+            hdr_cells[0].text = 'Company'
+            hdr_cells[1].text = 'Duration'
+            hdr_cells[2].text = 'Title'
+            hdr_cells[3].text = 'Roles and Responsibilities'
+            for exp in data.get("Experience") or []:
+                row_cells = table.add_row().cells
+                row_cells[0].text = exp.get('Company', '')
+                row_cells[1].text = exp.get('Duration', '')
+                row_cells[2].text = exp.get('Title', '')
+                roles_cell = row_cells[3]
+                for role in exp.get('Roles and Responsibilities') or []:
+                    roles_cell.add_paragraph(role, style='List Bullet')
+            add_horizontal_line(doc.add_paragraph())
+ 
+        # Footer
+        footer = doc.sections[0].footer
+        footer_para = footer.paragraphs[0]
+        footer_para.text = "Generated by LLM Resume Generator"
+        footer_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+ 
+        # Save
+        safe_name = re.sub(r'[\\/*?:"<>|]', "", data.get('Name', 'Unnamed'))
+        filename = f"formatted_resume-{safe_name}.docx"
+        full_path = os.path.join(path, filename)
+        doc.save(full_path)
+ 
+        return full_path
+ 
+    except Exception as e:
+        logging.error(f"An error occurred while generating the resume: {e}")
+        return None
+
+"""
+
+
+def read_pdf(uploaded_file):
+    try:
+        # if uploaded_file.type == "text/plain":
+        #     return uploaded_file.read().decode("utf-8")
+        # elif uploaded_file.type == "application/pdf":
+            # with pdfplumber.open(uploaded_file) as pdf:
+            #     return "".join([page.extract_text() for page in pdf.pages if page.extract_text()])
+        if (uploaded_file):
             doc = Document(uploaded_file)
             return "\n".join([paragraph.text for paragraph in doc.paragraphs])
         else:
@@ -83,78 +186,39 @@ def read_resume(uploaded_file):
     except Exception as e:
         st.error(f"Error reading resume: {e}")
         return None
+
  
-def parse_resume(resume_text):
+def parse_resume(resume_text,sample_code,template_pdf):
     try:
         summarised_text = llm._call(
-            "Kindly provide summary of profile, ensuring to include full name, email address, phone number, only single list of technical skills without categorizing, details of business capabilities, an overview of functional capabilities and complete professional experience along with roles and responsibilities if any" + resume_text,
+            "Given the docx document " + resume_text + "and its python code" + sample_code + "that creates docx file as per resume text format, learn how this python code was created for the docx format mentioned" + "\nNow you will be given a docx" + template_pdf + "using that generate a python code as learnt in the previous step" ,
             user="user"
         )
-        formatted_prompt = prompt_template.format(resume_text=summarised_text)
-        parsed_resume = llm._call(prompt=formatted_prompt, user="user")
+        # formatted_prompt = prompt_template.format(resume_text=summarised_text)
+        # parsed_resume = llm._call(summarised_text, user="user")
+        #st.write(parsed_resume)
  
-        if isinstance(parsed_resume, str):
-            parsed_resume = json.loads(parsed_resume)
+        # if isinstance(parsed_resume, str):
+        #     parsed_resume = json.loads(parsed_resume)
  
-        if isinstance(parsed_resume, dict) and "data" in parsed_resume and "content" in parsed_resume["data"]:
-            parsed_resume = parsed_resume["data"]["content"]
+        if isinstance(summarised_text, dict):
+            parsed_resume = parsed_resume.get("data", {}).get("content") # type: ignore
  
         return parsed_resume
     except Exception as e:
         st.error(f"Error parsing resume: {e}")
         return None
- 
-# Streamlit UI
-st.title("📄 Resume Parser")
- 
-uploaded_file = st.file_uploader("Upload your resume", type=["txt", "pdf", "docx"])
- 
-parsed_result = None
- 
-if uploaded_file is not None:
-    with st.spinner("Reading and parsing resume..."):
-        resume_text = read_resume(uploaded_file)
-        if resume_text:
-            parsed_result = parse_resume(resume_text)
- 
-if parsed_result:
-    if isinstance(parsed_result, str):
-        try:
-            parsed_result = json.loads(parsed_result)
-        except json.JSONDecodeError as e:
-            st.error(f"Failed to decode parsed result: {e}")
-            st.stop()
- 
-    if not isinstance(parsed_result, dict):
-        st.error("Parsed result is not a dictionary. Cannot proceed.")
-        st.stop()
- 
-    if 'Name' not in parsed_result:
-        st.error("The 'Name' field is missing in the parsed result.")
-        st.stop()
- 
-    st.subheader("📋 Parsed Resume Data")
-    st.json(parsed_result)
- 
-    # Save and offer download
-    save_path = os.path.join(os.path.expanduser("~"), "Documents", "resumeparser")
-    os.makedirs(save_path, exist_ok=True)
- 
-    try:
-        resume_json = json.dumps(parsed_result)
-        file_path = generate_formatted_resume_layout2_with_dividers(resume_json, save_path)
- 
-        if file_path:
-            file_name = os.path.basename(file_path)
-            with open(file_path, "rb") as f:
-                st.download_button(
-                    label="⬇️ Download Formatted Resume",
-                    data=f.read(),
-                    file_name=file_name,
-                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                )
-            st.success("Resume generated and ready for download!")
-        else:
-            st.error("Failed to generate resume. Please check the logs or try again.")
-    except Exception as e:
-        st.error(f"Error generating or downloading resume: {e}")
+
+resume_text = None
+#Step 1: Learn
+resume_text = read_pdf(r"D:\OneDrive - Wipro\Desktop\Trainng-Perl_Python\Python_Codes\LLM_USE Cases\formatted_resume-Malaya Ranjan Biswal.docx")
+print(resume_text)
+template_text = read_pdf(r"D:\OneDrive - Wipro\Desktop\Trainng-Perl_Python\Python_Codes\LLM_USE Cases\formatted_resume-Malaya Ranjan Biswal3.docx")
+print(template_text)
+parsed_resume = parse_resume(resume_text, sample_code, template_text)
+if parsed_resume:
+    print(parsed_resume)
+else:
+    print("Failed to parse resume.")
+
+#Step 2: Implement

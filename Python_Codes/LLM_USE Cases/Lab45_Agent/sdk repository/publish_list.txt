@@ -1,0 +1,7 @@
+<agent or team folder name>/run_workflow.py
+<agent or team folder name>/config.py
+<agent or team folder name>/main.py
+<agent or team folder name>/laip.Dockerfile
+<agent or team folder name>/config.json
+<agent or team folder name>/requirements.txt
+<agent or team folder name>/models.py

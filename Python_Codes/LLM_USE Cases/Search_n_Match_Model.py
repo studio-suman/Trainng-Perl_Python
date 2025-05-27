@@ -1,3 +1,5 @@
+# For SSL Certificate Error - python -m pip install pip-system-certs --use-feature=truststore
+
 import docx
 import pdfplumber
 import os
