@@ -13,7 +13,6 @@ logging.basicConfig(filename='resume_generator.log', level=logging.ERROR, format
 FONT="Helvetica"
  
 def layout5(parsed_result, path, image_path=None):
-    image_path= r"C:\Users\MA20306913\Documents\resumeparser\parserV1\Logo\Wipro_Primary Logo_Color_RGB.png"
     try:
         if not os.path.exists(path):
             os.makedirs(path)
@@ -23,7 +22,7 @@ def layout5(parsed_result, path, image_path=None):
             data = parsed_result
         else:
             raise ValueError("parsed_result must be a JSON string or a dictionary")
- 
+        print(type(data))
         # Create a presentation object
         prs = Presentation()
  
@@ -106,13 +105,13 @@ def layout5(parsed_result, path, image_path=None):
         font1.bold = True
         font1.color.rgb = RGBColor(0, 0, 139)
         p2=text_frame1.add_paragraph()
-        p2.text= data.get("Summary")  # type: ignore
+        p2.text=data.get("Summary") #type: ignore
         p2.level = 0
         run2 = p2.add_run()
         font2 = run2.font
         font2.name = FONT
         font2.size = Pt(18)
-        font2.color.rgb = RGBColor(0, 102, 204) # Blue
+        #font2.color.rgb = RGBColor(0, 102, 204) # Blue
  
         # Add the second text box
         text_box2 = slide.shapes.add_textbox(left2, top2, width2, height2)
@@ -138,7 +137,7 @@ def layout5(parsed_result, path, image_path=None):
             font2 = run2.font
             font2.name = FONT
             font2.size = Pt(18)
-            font2.color.rgb = RGBColor(0, 102, 204)
+            #font2.color.rgb = RGBColor(0, 102, 204)
  
         # Add the third text box
         text_box3 = slide.shapes.add_textbox(left3, top3, width3, height3)
@@ -163,7 +162,7 @@ def layout5(parsed_result, path, image_path=None):
             font2 = run2.font
             font2.name = FONT
             font2.size = Pt(18)
-            font2.color.rgb = RGBColor(0, 102, 204)
+            #font2.color.rgb = RGBColor(0, 102, 204)
  
         # Add the fourth text box
         text_box4 = slide.shapes.add_textbox(left4, top4, width4, height4)
@@ -193,7 +192,7 @@ def layout5(parsed_result, path, image_path=None):
                 font2 = run2.font
                 font2.name = FONT
                 font2.size = Pt(18)
-                font2.color.rgb = RGBColor(0, 102, 204) # Blue
+                #font2.color.rgb = RGBColor(0, 102, 204) # Blue
  
         # Add the fifth text box
         text_box5 = slide.shapes.add_textbox(left5, top5, width5, height5)
@@ -218,12 +217,12 @@ def layout5(parsed_result, path, image_path=None):
             font2 = run2.font
             font2.name = FONT
             font2.size = Pt(18)
-            font2.color.rgb = RGBColor(0, 102, 204)
+            #font2.color.rgb = RGBColor(0, 102, 204)
  
         # Add the sixth text box
         text_box6 = slide.shapes.add_textbox(left6, top6, width6, height6)
         text_frame6 = text_box6.text_frame
-        text_frame6.text = "Consulting engagement"
+        text_frame6.text = "Consulting Engagements"
         p1 = text_frame6.paragraphs[0]
         run1 = p1.runs[0]
         font1 = run1.font
@@ -232,7 +231,7 @@ def layout5(parsed_result, path, image_path=None):
         font1.bold = True
         font1.color.rgb = RGBColor(0, 0, 139)
        
-        consulting = data.get("Consulting engagement") or []
+        consulting = data.get("Consulting Engagements", "N/A") or []
         if isinstance(consulting, str):
             consulting = [consulting]
         for item in consulting:
@@ -243,7 +242,7 @@ def layout5(parsed_result, path, image_path=None):
             font2 = run2.font
             font2.name = FONT
             font2.size = Pt(18)
-            font2.color.rgb = RGBColor(0, 102, 204) # Blue
+            #font2.color.rgb = RGBColor(0, 102, 204) # Blue
  
         # Add the seventh text box
         text_box7 = slide.shapes.add_textbox(left7, top7, width7, height7)
@@ -257,7 +256,7 @@ def layout5(parsed_result, path, image_path=None):
         font1.bold = True
         font1.color.rgb = RGBColor(0, 0, 139)
  
-        education = data.get("Education or Academic Profile and Certifications") or []
+        education = data.get("Education or Academic Profile and Certifications", "N/A") or []
         if isinstance(education, dict):
             education = [education]
         elif isinstance(education, str):
@@ -265,8 +264,8 @@ def layout5(parsed_result, path, image_path=None):
  
         for entry in education:
             if isinstance(entry, dict):
-                degree = entry.get("Degree", "")
-                institution = entry.get("Institution", "")
+                degree = entry.get("Degree", "N/A")
+                institution = entry.get("Institution", "N/A")
                 duration = entry.get("Duration or Year", "")
                 p2 = text_frame7.add_paragraph()
                 p2.text = f"- {degree}, {institution} ({duration})"
@@ -278,7 +277,7 @@ def layout5(parsed_result, path, image_path=None):
             font2 = run2.font
             font2.name = FONT
             font2.size = Pt(18)
-            font2.color.rgb = RGBColor(0, 102, 204) # Blue
+            #font2.color.rgb = RGBColor(0, 102, 204) # Blue
            
         # Add and style the eighth text box
         text_box8 = slide.shapes.add_textbox(left8, top8, width8, height8)
@@ -314,9 +313,9 @@ def layout5(parsed_result, path, image_path=None):
             if isinstance(exp, dict):
                 title = exp.get("Title", "")
                 company = exp.get("Company", "")
-                duration = exp.get("Duration", "")
-                responsibilities = exp.get("Roles and Responsibilities") or []
- 
+                duration = exp.get("Duration", "N/A")
+                responsibilities = exp.get("Detailed Roles and Responsibilities") or []
+               
                 # Add job title, company, and duration
                 p1 = text_frame9.add_paragraph()
                 p1.text = f"{title} at {company} ({duration})"
@@ -340,7 +339,7 @@ def layout5(parsed_result, path, image_path=None):
                         font2 = run2.font
                         font2.name = FONT
                         font2.size = Pt(18)
-                        font2.color.rgb = RGBColor(0, 102, 204)
+                        #font2.color.rgb = RGBColor(0, 102, 204)
             elif isinstance(exp, str):
                 p = text_frame9.add_paragraph()
                 p.text = f"- {exp}"
@@ -349,7 +348,7 @@ def layout5(parsed_result, path, image_path=None):
                 font = run.font
                 font.name = FONT
                 font.size = Pt(18)
-                font.color.rgb = RGBColor(0, 102, 204)
+                #font.color.rgb = RGBColor(0, 102, 204)
  
         # Save
         safe_name = re.sub(r'[\\/*?:"<>|]', "", data.get('Name', 'Unnamed'))

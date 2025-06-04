@@ -32,57 +32,72 @@ image_path= r"C:\Users\MA20306913\Documents\resumeparser\parserV1\Logo\Wipro_Pri
 prompt_template = PromptTemplate(
     input_variables=["resume_text"],
     template="""
-    Extract the following information from the resume:
-    - Name
-    - Email
-    - Phone
-    - Linkedin Look for any linkedin.com profile or link mentioned in the resume
-    - Summary (Summarize within 500 characters)
-    - Roles Played
-    - Areas of Expertise
-    - Skills
-    - Industry Sectors
-    - Consulting engagement
-    - Education or Academic Profile and Certifications
-    - Experience and Accomplishments
+Extract the following information from the resume:
  
-    Provide the output in JSON format with the following keys:
-    - Name
-    - Email
-    - Phone
-    - Linkedin
-    - Summary
-    - Roles Played
-    - Areas of Expertise
-    - Skills
-    - Industry Sectors
-    - Consulting engagement
-    - Education or Academic Profile and Certifications
-    - Experience and Accomplishments
-   
-    From the experience summary extract the roles played
-   
-    From experience extract the domain knowledge as a list for Industry Sectors
-   
-    For Areas of Expertise extract:
-    - Identify domains, technologies, methodologies, or roles the individual has demonstrated experience in.
-    - Focus on what they have done, built, led, or contributed to.
-    - Present the output as a list of implicit areas of expertise, grouped by category if possible (e.g., Technical Domains, Tools & Technologies, Business Functions, etc.).
-   
-    For each experience, extract:
-    - Title
-    - Company
-    - Duration
-    - Roles and Responsibilities (as a list)
+- Name
+- Email
+- Phone
+- Linkedin (look for any linkedin.com profile or link mentioned in the Profile)
+- Summary (summarize with 500 characters)
+- Roles Played
+- Areas of Expertise
+- Skills (Populate Top 15 skills based on your understanding of the complete profile)
+- Industry Sectors
+- Consulting Engagements (Only take the engagements name where person have performed a Consultant role as per profile)
+- Education or Academic Profile and Certifications
+- Experience and Accomplishments
  
-    For each education entry, extract:
-    - Degree
-    - Institution
-    - Duration or Year
+Provide the output in JSON format with the following keys:
+- Name
+- Email
+- Phone
+- Linkedin
+- Summary
+- Roles Played
+- Areas of Expertise
+- Skills
+- Industry Sectors
+- Consulting Engagements
+- Education or Academic Profile and Certifications
+- Experience and Accomplishments
  
-    Resume text:
-    {resume_text}
-    """
+### Parsing Instructions:
+ 
+**Roles Played**:
+- From the experience section, extract all distinct roles the individual has held.
+ 
+**Industry Sectors**:
+- From the experience section, identify the domains or industries the individual has worked in (e.g., Healthcare, Finance, Retail).
+ 
+**Areas of Expertise**:
+- Identify domains, technologies, methodologies, or roles the individual has demonstrated experience in.
+- Focus on what they have done, built, led, or contributed to.
+- Present the output as a list of implicit areas of expertise, grouped by category if possible (e.g., Technical Domains, Tools & Technologies, Business Functions, etc.).
+ 
+**Experience and Accomplishments**:
+For each professional experience listed in the resume, extract the following details:
+- Title
+- Company
+- Duration
+- Location (if available)
+- Detailed Roles and Responsibilities:
+    - List each responsibility as a separate bullet point.
+    - Include both technical and managerial responsibilities.
+    - Capture any leadership, mentoring, or cross-functional collaboration.
+    - Include tools, technologies, or methodologies used.
+    - If achievements or outcomes are mentioned (e.g., improved performance, cost savings), include them as part of the responsibility.
+    - Maintain the original context and phrasing as much as possible, but ensure clarity.
+    - Ensure completeness—do not summarize or omit relevant details.
+ 
+**Education or Academic Profile and Certifications**:
+For each education entry, extract:
+- Degree
+- Institution
+- Duration or Year
+ 
+Resume text:
+{resume_text}
+"""
 )
  
 # Initialize LLM
@@ -94,7 +109,19 @@ def read_resume(uploaded_file):
             return uploaded_file.read().decode("utf-8")
         elif uploaded_file.type == "application/pdf":
             with pdfplumber.open(uploaded_file) as pdf:
-                return "".join([page.extract_text() for page in pdf.pages if page.extract_text()])
+                #return "".join([page.extract_text() for page in pdf.pages if page.extract_text()])
+                text = ""
+                for page in pdf.pages:
+                    # Extract regular text
+                    if page.extract_text():
+                        text += page.extract_text() + "\n"
+ 
+                    # Extract tables
+                    tables = page.extract_tables()
+                    for table in tables:
+                        for row in table:
+                            text += "\t".join(cell if cell else "" for cell in row) + "\n"
+            return text
         elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
             doc = Document(uploaded_file)
             return "\n".join([paragraph.text for paragraph in doc.paragraphs])
@@ -106,21 +133,47 @@ def read_resume(uploaded_file):
  
 def parse_resume(resume_text):
     try:
-        summarised_text = llm._call(
-            "Kindly provide summary of profile, ensuring to include full name, email address, phone number, only single list of technical skills without categorizing, details of business capabilities, an overview of functional capabilities and complete professional experience along with roles and responsibilities if any,special notes read the entire profile before summarising as there can be multiple prifile formats emmeded one below another, Read profile till the end and the summarise" + resume_text,
+        summarised_response = llm._call(
+            "Kindly provide summary of profile, ensuring to include full name, email address, phone number, only single list of technical skills without categorizing, details of business capabilities, an overview of functional capabilities and complete professional experience along with roles and responsibilities if any, special notes read the entire profile before summarising as there can be multiple profile formats embedded one below another. Read profile till the end and then summarise." + resume_text,
             user="user"
         )
+ 
+        if isinstance(summarised_response, tuple):
+            summarised_response = summarised_response[0]
+ 
+        if isinstance(summarised_response, dict) and "data" in summarised_response and "content" in summarised_response["data"]: # type: ignore
+            summarised_text = summarised_response["data"]["content"] # type: ignore
+        else:
+            summarised_text = summarised_response  # fallback if already a string
+ 
         formatted_prompt = prompt_template.format(resume_text=summarised_text)
-        parsed_resume = llm._call(prompt=formatted_prompt, user="user")
-        #st.write(parsed_resume)
+        parsed_response = llm._call(prompt=formatted_prompt, user="user")
  
-        if isinstance(parsed_resume, str):
-            parsed_resume = json.loads(parsed_resume)
+        if isinstance(parsed_response, tuple):
+            parsed_response = parsed_response[0]
  
-        if isinstance(parsed_resume, dict) and "data" in parsed_resume and "content" in parsed_resume["data"]:
-            parsed_resume = parsed_resume["data"]["content"]
+        if isinstance(parsed_response, dict) and "data" in parsed_response and "content" in parsed_response["data"]: # type: ignore
+            parsed_text = parsed_response["data"]["content"] # type: ignore
+        else:
+            parsed_text = parsed_response
+ 
+        if isinstance(parsed_text, str):
+            parsed_text = parsed_text.strip()
+            if parsed_text.startswith("```json"):
+                parsed_text = parsed_text.replace("```json", "").strip()
+            if parsed_text.endswith("```"):
+                parsed_text = parsed_text.replace("```", "").strip()
+                print(type(parsed_text))
+            parsed_resume = json.loads(parsed_text)
+           
+        else:
+            raise ValueError("Parsed content is not a string")
  
         return parsed_resume
+ 
+    except json.JSONDecodeError as e:
+        st.error(f"JSON parsing error: {e}")
+        return None
     except Exception as e:
         st.error(f"Error parsing resume: {e}")
         return None
@@ -144,8 +197,9 @@ def generate_and_offer_download(parsed_result, layout_function):
         save_path = os.path.join(os.path.expanduser("~"), "Documents", "resumeparser")
         os.makedirs(save_path, exist_ok=True)
         resume_json = json.dumps(parsed_result)
+        #st.json(resume_json)
         file_path = layout_function(resume_json, save_path, image_path)
- 
+        #st.write(file_path)
         if file_path:
             file_name = os.path.basename(file_path)
             with open(file_path, "rb") as f:
@@ -207,4 +261,3 @@ for i, (title, img_path, func) in enumerate(images):
         st.image(img_path, use_container_width=False)
         if st.button(f"Layout: {title}", use_container_width=True):
             func(parsed_result)
- 
