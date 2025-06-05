@@ -6,6 +6,7 @@ from docx.oxml import OxmlElement
 import pdfplumber
 import json
 import os
+import zipfile
 from generate_resume import layout3, layout1, layout2
 from pptcreation import layout5
 from pydantic import BaseModel
@@ -24,10 +25,9 @@ class Resume(BaseModel):
     certifications: List[str]
     experience: List[dict]
     education: List[dict]
-   
+     
 #logo
 image_path= r"D:\OneDrive - Wipro\Desktop\Trainng-Perl_Python\Python_Codes\LLM_USE Cases\Resume_Parser\New folder\\Wipro_Primary Logo_Color_RGB.png"
- 
 # Prompt template for resume parsing
 prompt_template = PromptTemplate(
     input_variables=["resume_text"],
@@ -178,20 +178,49 @@ def parse_resume(resume_text):
         st.error(f"Error parsing resume: {e}")
         return None
  
+ 
+ 
 # Streamlit UI
 st.markdown("<h1 style='font-size: 30px;color:#4F81BD;'>Resume Parser📄</h1>", unsafe_allow_html=True)
 st.markdown("<h8 style='font-size: 16px;color:#17365D;'>Upload your resume</h8>", unsafe_allow_html=True)
-uploaded_file = st.file_uploader("Upload your resume", label_visibility="collapsed", type=["txt", "pdf", "docx"])
+uploaded_files = st.file_uploader("Upload your resume", label_visibility="collapsed", type=["txt", "pdf", "docx"], accept_multiple_files=True)
  
-parsed_result = None
+#parsed_result = None
+#Enabled multi-upload
+parsed_results = []
+error_logs = []
  
-if uploaded_file is not None:
-    with st.spinner("Reading and parsing resume..."):
-        resume_text = read_resume(uploaded_file)
-        if resume_text:
-            parsed_result = parse_resume(resume_text)
+if uploaded_files:
+    for uploaded_file in uploaded_files:
+        with st.spinner(f"Processing {uploaded_file.name}..."):
+            try:
+                resume_text = read_resume(uploaded_file)
+                if not resume_text:
+                    raise ValueError("Empty or unreadable resume text.")
+ 
+                parsed_result = parse_resume(resume_text)
+                if not parsed_result:
+                    raise ValueError("Parsing returned no result.")
+ 
+                parsed_results.append((uploaded_file.name, parsed_result))
+            except Exception as e:
+                error_logs.append((uploaded_file.name, str(e)))
+ 
+ 
+# Display error summary
+if error_logs:
+    st.markdown("## ⚠️ Error Summary")
+    for filename, error in error_logs:
+        st.error(f"❌ {filename}: {error}")
+ 
+# if uploaded_file is not None:
+#     with st.spinner("Reading and parsing resume..."):
+#         resume_text = read_resume(uploaded_file)
+#         if resume_text:
+#             parsed_result = parse_resume(resume_text)
  
 # Helper function to generate and offer download
+ 
 def generate_and_offer_download(parsed_result, layout_function):
     try:
         save_path = os.path.join(os.path.expanduser("~"), "Documents", "resumeparser")
@@ -216,6 +245,34 @@ def generate_and_offer_download(parsed_result, layout_function):
     except Exception as e:
         st.error(f"Error generating or downloading resume: {e}")
  
+def generate_and_zip_resumes(parsed_results, layout_function, zip_file_name="resumes.zip"):
+    try:
+        save_path = os.path.join(os.path.expanduser("~"), "Documents", "resumeparser")
+        os.makedirs(save_path, exist_ok=True)
+ 
+        temp_dir = os.path.join(save_path, "temp_resumes")
+        os.makedirs(temp_dir, exist_ok=True)
+ 
+        for file_name, parsed_result in parsed_results:
+            resume_json = json.dumps(parsed_result)
+            layout_function(resume_json, temp_dir, image_path)
+ 
+        zip_file_path = os.path.join(save_path, zip_file_name)
+        with zipfile.ZipFile(zip_file_path, 'w') as zipf:
+            for root, _, files in os.walk(temp_dir):
+                for file in files:
+                    zipf.write(os.path.join(root, file), arcname=file)
+ 
+        for file in os.listdir(temp_dir):
+            os.remove(os.path.join(temp_dir, file))
+        os.rmdir(temp_dir)
+ 
+        return zip_file_path
+ 
+    except Exception as e:
+        st.error(f"Error generating or zipping resumes: {e}")
+        return None
+ 
 # Layout selection functions
 def option_one(parsed_result):
     st.success("Layout 1 selected!")
@@ -235,9 +292,11 @@ images = [
     ("Phaedon", r"D:\OneDrive - Wipro\Desktop\Trainng-Perl_Python\Python_Codes\LLM_USE Cases\Resume_Parser\New folder\\Layout2.png", option_two),
     ("Erasmos", r"D:\OneDrive - Wipro\Desktop\Trainng-Perl_Python\Python_Codes\LLM_USE Cases\Resume_Parser\New folder\\Layout3.png", option_three),
 ]
+if parsed_results:
+    for file_name, parsed_result in parsed_results:
+        st.markdown(f"### Parsed Result for: {file_name}")
+        st.json(parsed_result)
  
-if parsed_result:
-    st.json(parsed_result)
     if isinstance(parsed_result, str):
         try:
             parsed_result = json.loads(parsed_result)
@@ -261,3 +320,24 @@ for i, (title, img_path, func) in enumerate(images):
         st.image(img_path, use_container_width=False)
         if st.button(f"Layout: {title}", use_container_width=True):
             func(parsed_result)
+ 
+# Bulk download section
+if parsed_results:
+    layout_options = {
+        "Kallisti (Layout 1)": layout5,
+        "Phaedon (Layout 2)": layout2,
+        "Erasmos (Layout 3)": layout3
+    }
+    selected_layout_label = st.selectbox("📄 Select a layout for all resumes", list(layout_options.keys()))
+    selected_layout_function = layout_options[selected_layout_label]
+   
+    st.markdown("<h8 style='font-size: 16px;color:#17365D;'> 📦 Download All Resumes as ZIP</h8>", unsafe_allow_html=True)
+    zip_file_path = generate_and_zip_resumes(parsed_results, selected_layout_function)
+    if zip_file_path:
+        with open(zip_file_path, "rb") as f:
+            st.download_button(
+                label="⬇️ Download All Resumes",
+                data=f.read(),
+                file_name=os.path.basename(zip_file_path),
+                mime="application/zip"
+)

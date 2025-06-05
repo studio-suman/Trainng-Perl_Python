@@ -37,16 +37,16 @@ def layout5(parsed_result, path, image_path=None):
  
  
         # Define the position and size of the text boxes
-        left0, top0, width0, height0 = Cm(2), Cm(1.57), Cm(13.94), Cm(5.5) #Name
-        left1, top1, width1, height1 = Cm(2), Cm(4.96), Cm(31.18), Cm(6.5) #Summary
-        left2, top2, width2, height2 = Cm(2), Cm(11.5), Cm(8), Cm(9.4) #Roles played
-        left3, top3, width3, height3 = Cm(12.15), Cm(11.44), Cm(8), Cm(7.61)#Area's of Experties
-        left4, top4, width4, height4 = Cm(23.94), Cm(11.5), Cm(6), Cm(6)#tools
-        left5, top5, width5, height5 = Cm(12.16), Cm(20.43), Cm(8), Cm(6.41)#Industry sectors
-        left6, top6, width6, height6 = Cm(2), Cm(28.36), Cm(6), Cm(6)#Consulting engagement
-        left7, top7, width7, height7 = Cm(11.94), Cm(28.36), Cm(20.67), Cm(6.41)#Education
-        left8, top8, width8, height8 = Cm(34.91), Cm(1.34), Cm(32.31), Cm(1.33)#Experience and Accomplishments
-        left9, top9, width9, height9 = Cm(34.91), Cm(2.95), Cm(32.31), Cm(34.11)#Education
+        left0, top0, width0, height0 = Cm(2), Cm(2), Cm(14), Cm(6) #Name
+        left1, top1, width1, height1 = Cm(2), Cm(5), Cm(31), Cm(7) #Summary
+        left2, top2, width2, height2 = Cm(2), Cm(12), Cm(8), Cm(9) #Roles played
+        left3, top3, width3, height3 = Cm(12), Cm(12), Cm(7), Cm(8)#Area's of Experties
+        left4, top4, width4, height4 = Cm(24), Cm(12), Cm(7), Cm(8)#tools
+        left5, top5, width5, height5 = Cm(12), Cm(20), Cm(8), Cm(6)#Industry sectors
+        left6, top6, width6, height6 = Cm(2), Cm(28), Cm(6), Cm(6)#Consulting engagement
+        left7, top7, width7, height7 = Cm(12), Cm(28), Cm(21), Cm(6)#Education
+        left8, top8, width8, height8 = Cm(35), Cm(1.5), Cm(32), Cm(1.5)#Experience and Accomplishments
+        left9, top9, width9, height9 = Cm(35), Cm(3), Cm(32), Cm(34)#Education
  
         # Add a shape to cover half of the slide with light gray background
         left_bg, top_bg, width_bg, height_bg = Cm(0), Cm(-0), Cm(33.86), Cm(38.1) # Half slide
@@ -88,7 +88,7 @@ def layout5(parsed_result, path, image_path=None):
             p2.text=info
             run2 = p2.add_run()
             font2 = run2.font
-            font2.name = FONT
+            font2.name = "Helvetica"
             font2.size = Pt(24)
             font2.color.rgb = RGBColor(0, 102, 204) # Blue
  
@@ -109,7 +109,7 @@ def layout5(parsed_result, path, image_path=None):
         p2.level = 0
         run2 = p2.add_run()
         font2 = run2.font
-        font2.name = FONT
+        font2.name = "Helvetica"
         font2.size = Pt(18)
         #font2.color.rgb = RGBColor(0, 102, 204) # Blue
  
