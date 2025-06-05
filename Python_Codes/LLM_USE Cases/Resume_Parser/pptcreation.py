@@ -38,7 +38,7 @@ def layout5(parsed_result, path, image_path=None):
  
         # Define the position and size of the text boxes
         left0, top0, width0, height0 = Cm(2), Cm(1.57), Cm(13.94), Cm(5.5) #Name
-        left1, top1, width1, height1 = Cm(2), Cm(7.4), Cm(31.18), Cm(2.81) #Summary
+        left1, top1, width1, height1 = Cm(2), Cm(4.96), Cm(31.18), Cm(6.5) #Summary
         left2, top2, width2, height2 = Cm(2), Cm(11.5), Cm(8), Cm(9.4) #Roles played
         left3, top3, width3, height3 = Cm(12.15), Cm(11.44), Cm(8), Cm(7.61)#Area's of Experties
         left4, top4, width4, height4 = Cm(23.94), Cm(11.5), Cm(6), Cm(6)#tools
@@ -248,6 +248,7 @@ def layout5(parsed_result, path, image_path=None):
         text_box7 = slide.shapes.add_textbox(left7, top7, width7, height7)
         text_frame7 = text_box7.text_frame
         text_frame7.text = "Education & Certifications"
+        text_frame7.word_wrap = True
         p1 = text_frame7.paragraphs[0]
         run1 = p1.runs[0]
         font1 = run1.font

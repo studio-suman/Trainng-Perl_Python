@@ -26,7 +26,7 @@ class Resume(BaseModel):
     education: List[dict]
    
 #logo
-image_path= r"C:\Users\MA20306913\Documents\resumeparser\parserV1\Logo\Wipro_Primary Logo_Color_RGB.png"
+image_path= r"D:\OneDrive - Wipro\Desktop\Trainng-Perl_Python\Python_Codes\LLM_USE Cases\Resume_Parser\New folder\\Wipro_Primary Logo_Color_RGB.png"
  
 # Prompt template for resume parsing
 prompt_template = PromptTemplate(
@@ -38,12 +38,12 @@ Extract the following information from the resume:
 - Email
 - Phone
 - Linkedin (look for any linkedin.com profile or link mentioned in the Profile)
-- Summary (summarize with 500 characters)
+- Summary (summarize within 500 characters)
 - Roles Played
 - Areas of Expertise
 - Skills (Populate Top 15 skills based on your understanding of the complete profile)
 - Industry Sectors
-- Consulting Engagements (Only take the engagements name where person have performed a Consultant role as per profile)
+- Consulting Engagements (Only take the Top 5 engagements name where person have performed a Consultant role as per profile)
 - Education or Academic Profile and Certifications
 - Experience and Accomplishments
  
@@ -231,9 +231,9 @@ def option_three(parsed_result):
  
 # Image layout options
 images = [
-    ("Kallisti", r"D:\OneDrive - Wipro\Desktop\Trainng-Perl_Python\Python_Codes\LLM_USE Cases\New folder\\Layout1.png", option_one),
-    ("Phaedon", r"D:\OneDrive - Wipro\Desktop\Trainng-Perl_Python\Python_Codes\LLM_USE Cases\New folder\\Layout2.png", option_two),
-    ("Erasmos", r"D:\OneDrive - Wipro\Desktop\Trainng-Perl_Python\Python_Codes\LLM_USE Cases\New folder\\Layout3.png", option_three),
+    ("Kallisti", r"D:\OneDrive - Wipro\Desktop\Trainng-Perl_Python\Python_Codes\LLM_USE Cases\Resume_Parser\New folder\\Layout1.png", option_one),
+    ("Phaedon", r"D:\OneDrive - Wipro\Desktop\Trainng-Perl_Python\Python_Codes\LLM_USE Cases\Resume_Parser\New folder\\Layout2.png", option_two),
+    ("Erasmos", r"D:\OneDrive - Wipro\Desktop\Trainng-Perl_Python\Python_Codes\LLM_USE Cases\Resume_Parser\New folder\\Layout3.png", option_three),
 ]
  
 if parsed_result:
