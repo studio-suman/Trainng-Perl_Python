@@ -177,50 +177,8 @@ def parse_resume(resume_text):
     except Exception as e:
         st.error(f"Error parsing resume: {e}")
         return None
- 
- 
- 
-# Streamlit UI
-st.markdown("<h1 style='font-size: 30px;color:#4F81BD;'>Resume Parser📄</h1>", unsafe_allow_html=True)
-st.markdown("<h8 style='font-size: 16px;color:#17365D;'>Upload your resume</h8>", unsafe_allow_html=True)
-uploaded_files = st.file_uploader("Upload your resume", label_visibility="collapsed", type=["txt", "pdf", "docx"], accept_multiple_files=True)
- 
-#parsed_result = None
-#Enabled multi-upload
-parsed_results = []
-error_logs = []
- 
-if uploaded_files:
-    for uploaded_file in uploaded_files:
-        with st.spinner(f"Processing {uploaded_file.name}..."):
-            try:
-                resume_text = read_resume(uploaded_file)
-                if not resume_text:
-                    raise ValueError("Empty or unreadable resume text.")
- 
-                parsed_result = parse_resume(resume_text)
-                if not parsed_result:
-                    raise ValueError("Parsing returned no result.")
- 
-                parsed_results.append((uploaded_file.name, parsed_result))
-            except Exception as e:
-                error_logs.append((uploaded_file.name, str(e)))
- 
- 
-# Display error summary
-if error_logs:
-    st.markdown("## ⚠️ Error Summary")
-    for filename, error in error_logs:
-        st.error(f"❌ {filename}: {error}")
- 
-# if uploaded_file is not None:
-#     with st.spinner("Reading and parsing resume..."):
-#         resume_text = read_resume(uploaded_file)
-#         if resume_text:
-#             parsed_result = parse_resume(resume_text)
- 
-# Helper function to generate and offer download
- 
+
+
 def generate_and_offer_download(parsed_result, layout_function):
     try:
         save_path = os.path.join(os.path.expanduser("~"), "Documents", "resumeparser")
@@ -292,52 +250,96 @@ images = [
     ("Phaedon", r"D:\OneDrive - Wipro\Desktop\Trainng-Perl_Python\Python_Codes\LLM_USE Cases\Resume_Parser\New folder\\Layout2.png", option_two),
     ("Erasmos", r"D:\OneDrive - Wipro\Desktop\Trainng-Perl_Python\Python_Codes\LLM_USE Cases\Resume_Parser\New folder\\Layout3.png", option_three),
 ]
-if parsed_results:
-    for file_name, parsed_result in parsed_results:
-        st.markdown(f"### Parsed Result for: {file_name}")
-        st.json(parsed_result)
+
+def ppt_call(): 
+    # Streamlit UI
+    #st.markdown("<h1 style='font-size: 30px;color:#4F81BD;'>Resume Parser📄</h1>", unsafe_allow_html=True)
+    st.markdown("<h8 style='font-size: 16px;'>Upload your resume</h8>", unsafe_allow_html=True)
+    uploaded_files = st.file_uploader("Upload your resume", label_visibility="collapsed", type=["txt", "pdf", "docx"], accept_multiple_files=True)
+    
+    #parsed_result = None
+    #Enabled multi-upload
+    parsed_results = []
+    error_logs = []
+    
+    if uploaded_files:
+        for uploaded_file in uploaded_files:
+            with st.spinner(f"Processing {uploaded_file.name}..."):
+                try:
+                    resume_text = read_resume(uploaded_file)
+                    if not resume_text:
+                        raise ValueError("Empty or unreadable resume text.")
+    
+                    parsed_result = parse_resume(resume_text)
+                    if not parsed_result:
+                        raise ValueError("Parsing returned no result.")
+    
+                    parsed_results.append((uploaded_file.name, parsed_result))
+                except Exception as e:
+                    error_logs.append((uploaded_file.name, str(e)))
+    
+    
+    # Display error summary
+    if error_logs:
+        st.markdown("## ⚠️ Error Summary")
+        for filename, error in error_logs:
+            st.error(f"❌ {filename}: {error}")
+    
+    # if uploaded_file is not None:
+    #     with st.spinner("Reading and parsing resume..."):
+    #         resume_text = read_resume(uploaded_file)
+    #         if resume_text:
+    #             parsed_result = parse_resume(resume_text)
+    
+    # Helper function to generate and offer download
  
-    if isinstance(parsed_result, str):
-        try:
-            parsed_result = json.loads(parsed_result)
-        except json.JSONDecodeError as e:
-            st.error(f"Failed to decode parsed result: {e}")
-            st.stop()
- 
-    if not isinstance(parsed_result, dict):
-        st.error("Parsed result is not a dictionary. Cannot proceed.")
-        st.stop()
- 
-    if 'Name' not in parsed_result:
-        st.error("The 'Name' field is missing in the parsed result.")
-        st.stop()
- 
-# Layout selection UI
-st.markdown("<h8 style='font-size: 16px;color:#17365D;'>Choose a Layout:</h8>", unsafe_allow_html=True)
-cols = st.columns(3, vertical_alignment="center")
-for i, (title, img_path, func) in enumerate(images):
-    with cols[i]:
-        st.image(img_path, use_container_width=False)
-        if st.button(f"Layout: {title}", use_container_width=True):
-            func(parsed_result)
- 
-# Bulk download section
-if parsed_results:
-    layout_options = {
-        "Kallisti (Layout 1)": layout5,
-        "Phaedon (Layout 2)": layout2,
-        "Erasmos (Layout 3)": layout3
-    }
-    selected_layout_label = st.selectbox("📄 Select a layout for all resumes", list(layout_options.keys()))
-    selected_layout_function = layout_options[selected_layout_label]
-   
-    st.markdown("<h8 style='font-size: 16px;color:#17365D;'> 📦 Download All Resumes as ZIP</h8>", unsafe_allow_html=True)
-    zip_file_path = generate_and_zip_resumes(parsed_results, selected_layout_function)
-    if zip_file_path:
-        with open(zip_file_path, "rb") as f:
-            st.download_button(
-                label="⬇️ Download All Resumes",
-                data=f.read(),
-                file_name=os.path.basename(zip_file_path),
-                mime="application/zip"
-)
+
+    if parsed_results:
+        for file_name, parsed_result in parsed_results:
+            st.markdown(f"### Parsed Result for: {file_name}")
+            #st.json(parsed_result)
+    
+            if isinstance(parsed_result, str):
+                try:
+                    parsed_result = json.loads(parsed_result)
+                except json.JSONDecodeError as e:
+                    st.error(f"Failed to decode parsed result: {e}")
+                    st.stop()
+        
+            if not isinstance(parsed_result, dict):
+                st.error("Parsed result is not a dictionary. Cannot proceed.")
+                st.stop()
+        
+            if 'Name' not in parsed_result:
+                st.error("The 'Name' field is missing in the parsed result.")
+                st.stop()
+        
+            # Layout selection UI
+            st.markdown("<h8 style='font-size: 16px;'>Choose a Layout:</h8>", unsafe_allow_html=True)
+            cols = st.columns(3, vertical_alignment="center")
+            for i, (title, img_path, func) in enumerate(images):
+                with cols[i]:
+                    st.image(img_path, use_container_width=False)
+                    if st.button(f"Layout: {title}", use_container_width=True):
+                        func(parsed_result)
+    
+    # Bulk download section
+    if parsed_results:
+        layout_options = {
+            "Kallisti (Layout 1)": layout5,
+            "Phaedon (Layout 2)": layout2,
+            "Erasmos (Layout 3)": layout3
+        }
+        selected_layout_label = st.selectbox("📄 Select a layout for all resumes", list(layout_options.keys()))
+        selected_layout_function = layout_options[selected_layout_label]
+    
+        st.markdown("<h8 style='font-size: 16px;'> 📦 Download All Resumes as ZIP</h8>", unsafe_allow_html=True)
+        zip_file_path = generate_and_zip_resumes(parsed_results, selected_layout_function)
+        if zip_file_path:
+            with open(zip_file_path, "rb") as f:
+                st.download_button(
+                    label="⬇️ Download All Resumes",
+                    data=f.read(),
+                    file_name=os.path.basename(zip_file_path),
+                    mime="application/zip"
+                )
