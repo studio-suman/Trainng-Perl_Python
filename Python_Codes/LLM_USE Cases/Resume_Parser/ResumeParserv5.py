@@ -21,16 +21,16 @@ from LLMLab45 import LlamaLLM  # Your custom LLM wrapper
 logging.basicConfig(filename='resume_generator.log', level=logging.ERROR, format='%(asctime)s:%(levelname)s:%(message)s')
  
 # Define the Pydantic model for structured output
-# class Resume(BaseModel):
-#     name: str
-#     email: str
-#     phone: str
-#     linkedin: str
-#     summary: str
-#     skills: List[str]
-#     certifications: List[str]
-#     experience: List[dict]
-#     education: List[dict]
+class Resume(BaseModel):
+    name: str
+    email: str
+    phone: str
+    linkedin: str
+    summary: str
+    skills: List[str]
+    certifications: List[str]
+    experience: List[dict]
+    education: List[dict]
 
 class User(BaseModel):
     username: str
