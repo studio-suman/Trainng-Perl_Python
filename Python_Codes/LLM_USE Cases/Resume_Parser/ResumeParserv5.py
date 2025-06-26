@@ -21,16 +21,16 @@ from LLMLab45 import LlamaLLM  # Your custom LLM wrapper
 logging.basicConfig(filename='resume_generator.log', level=logging.ERROR, format='%(asctime)s:%(levelname)s:%(message)s')
  
 # Define the Pydantic model for structured output
-class Resume(BaseModel):
-    name: str
-    email: str
-    phone: str
-    linkedin: str
-    summary: str
-    skills: List[str]
-    certifications: List[str]
-    experience: List[dict]
-    education: List[dict]
+# class Resume(BaseModel):
+#     name: str
+#     email: str
+#     phone: str
+#     linkedin: str
+#     summary: str
+#     skills: List[str]
+#     certifications: List[str]
+#     experience: List[dict]
+#     education: List[dict]
 
 class User(BaseModel):
     username: str
@@ -119,7 +119,7 @@ def parse_resume(resume_text):
         )
         formatted_prompt = prompt_template.format(resume_text=summarised_text)
         parsed_response = llm._call(prompt=formatted_prompt, user="user")
-        #st.write(parsed_resume)
+        st.json(parsed_response)
  
         if isinstance(parsed_response, dict) and "data" in parsed_response and "content" in parsed_response["data"]: # type: ignore
             parsed_text = parsed_response["data"]["content"] # type: ignore

@@ -191,6 +191,8 @@ if "allow_interview" not in st.session_state:
     st.session_state.allow_interview = False
 if "start_interview" not in st.session_state:
     st.session_state.start_interview = False
+if "match_score" not in st.session_state:
+    st.session_state.match_score = 0
  
  
 # Upload job description
@@ -221,16 +223,17 @@ if job_description_file and resume_file and job_description and resume:
         match_summary, match_score = analyze_jd_resume_match(job_description, resume)
         st.subheader("JD-Resume Matching Summary")
         st.text_area("Matching Analysis", match_summary, height=300)
- 
+        st.session_state.match_score = match_score
+
         if match_score < 60:
             st.warning(f"Overall Match Score is {match_score}%. This is considered low.")
             col1, col2 = st.columns(2)
             with col1:
                 if st.button("Continue and Apply Anyway"):
-                    st.success("You chose to continue. Proceeding to interview questions.")
+                    st.popover("You chose to continue. Proceeding to interview questions.")
                     st.session_state.allow_interview = True
                     st.session_state.start_interview = True
-                    
+                    st.rerun()
             with col2:
                 if st.button("Skip This Role"):
                     st.session_state.allow_interview = False
@@ -240,16 +243,18 @@ if job_description_file and resume_file and job_description and resume:
             st.success(f"Overall Match Score is {match_score}%. You are a good fit!")
             st.session_state.allow_interview = True
             st.session_state.start_interview = True
+            st.rerun()
  
 # Automatically generate interview questions
-if st.session_state.allow_interview and st.session_state.start_interview:
+if st.session_state.get("allow_interview") and st.session_state.get("start_interview"):
     st.session_state.questions = generate_interview_questions(job_description, resume).split("\n")
     st.session_state.interview_stage = 0
     st.session_state.responses = []
     st.session_state.start_interview = False  # Reset flag
+    st.rerun()
  
 # Conduct interview
-if st.session_state.questions and st.session_state.allow_interview:
+if st.session_state.get("questions") and st.session_state.get("allow_interview"):
     current_question = st.session_state.questions[st.session_state.interview_stage]
     st.write(f"**Question {st.session_state.interview_stage + 1}:** {current_question}")
     candidate_answer = st.text_input("Your answer:")
@@ -257,6 +262,7 @@ if st.session_state.questions and st.session_state.allow_interview:
     if st.button("Submit Answer"):
         st.session_state.responses.append(candidate_answer)
         st.session_state.interview_stage += 1
+        st.rerun()
  
         if st.session_state.interview_stage >= len(st.session_state.questions):
             st.write("Interview completed. Generating skill analysis report...")
