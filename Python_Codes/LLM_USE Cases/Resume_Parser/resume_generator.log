@@ -7,3 +7,5 @@
 2025-05-26 14:11:48,579:ERROR:An error occurred while generating the resume: 'str' object has no attribute 'get'
 2025-06-04 19:12:48,384:ERROR:An error occurred while generating the resume: 'NoneType' object has no attribute 'get'
 2025-06-04 19:18:44,531:ERROR:An error occurred while generating the resume: 'NoneType' object has no attribute 'get'
+2025-06-26 14:23:23,556:ERROR:Error parsing resume: 401 Client Error: UNAUTHORIZED for url: https://api.lab45.ai/v1.1/skills/completion/query
+2025-06-26 14:23:44,333:ERROR:Error parsing resume: 401 Client Error: UNAUTHORIZED for url: https://api.lab45.ai/v1.1/skills/completion/query
