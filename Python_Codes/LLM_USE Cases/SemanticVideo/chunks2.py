@@ -8,7 +8,7 @@ from transformers import pipeline
 from multiprocessing import Pool, cpu_count
 
 os.environ["PATH"] += os.pathsep + r"C:\ffmpeg\bin"
-subprocess.run(["ffmpeg", "-version"])
+#subprocess.run(["ffmpeg", "-version"])
 
 # Step 1: Transcribe the video using Whisper
 def transcribe_video(video_path):
