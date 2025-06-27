@@ -7,6 +7,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 from transformers import pipeline
 from multiprocessing import Pool, cpu_count
 
+os.environ["PATH"] += os.pathsep + r"C:\ffmpeg\bin"
+subprocess.run(["ffmpeg", "-version"])
+
 # Step 1: Transcribe the video using Whisper
 def transcribe_video(video_path):
     model = whisper.load_model("base")  # type: ignore
@@ -80,6 +83,7 @@ def extract_video_segments(video_path, chunks, output_dir="video_chunks"):
 # Example usage
 video_file = r"D:\OneDrive - Wipro\Desktop\EF-connect-Recording.mp4"  # Replace with your video file path
 segments = transcribe_video(video_file)
+print(segments)
 #embeddings = embed_segments_parallel(segments)
 #chunks = semantic_chunking(segments, embeddings)
 #summaries = summarize_chunks_parallel(chunks)
