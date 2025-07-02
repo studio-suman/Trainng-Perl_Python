@@ -84,7 +84,8 @@ def extract_video_segments(video_path, chunks, output_dir="video_chunks"):
 video_file = r"D:\OneDrive - Wipro\Desktop\EF-connect-Recording.mp4"  # Replace with your video file path
 segments = transcribe_video(video_file)
 print(segments)
-#embeddings = embed_segments_parallel(segments)
+embeddings = embed_segments_parallel(segments)
+print(embeddings)
 #chunks = semantic_chunking(segments, embeddings)
 #summaries = summarize_chunks_parallel(chunks)
 #output_folder = extract_video_segments(video_file, chunks)
