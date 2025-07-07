@@ -1,3 +1,4 @@
+from curses import raw
 import os
 from pydantic import Extra
 import requests
@@ -131,7 +132,7 @@ def read_pdf(file):
     pdf_document = fitz.open(stream=file.read(), filetype="pdf")
     text = ""
     for page in pdf_document:
-        text += page.get_text() # type: ignore
+        text += page.get_text() # pyright: ignore[reportAttributeAccessIssue]
     return text
  
 def extract_text_from_docx(file):
@@ -187,48 +188,23 @@ class InterviewQA(BaseModel):
     questions_and_answers: Dict[str, str]
 """
     response = llm._call(prompt, user)
-    response = safe_parse_json(response['data']['content'])  # type: ignore
-    return response  # type: ignore
+    return response['data']['content'] # type: ignore
  
 def simulate_interview(job_description, resume, responses):
     prompt = f"Job Description:\n{job_description}\n\nCandidate Resume:\n{resume}\n\nInterview Responses:\n{responses}\n\nAnalyze the candidate's skills based on the interview responses."
     response = llm._call(prompt, user)
     return response['data']['content'] # type: ignore
-
-
-def safe_parse_json(raw_json: str):
-        # Step 1: Remove Markdown formatting
-        cleaned = re.sub(r"^```json|```$", "", raw_json.strip(), flags=re.MULTILINE).strip()
  
-        # Step 2: Try standard JSON parsing
-        try:
-            return json.loads(cleaned)
-        except json.JSONDecodeError:
-            pass
- 
-        # Step 3: Try using ast.literal_eval (handles Python-style dicts)
-        try:
-            return ast.literal_eval(cleaned)
-        except (ValueError, SyntaxError):
-            pass
- 
-        # Step 4: Try fixing common issues manually
-        cleaned = cleaned.replace('\n', '\\n').replace('\r', '')
-        cleaned = re.sub(r'(?<!\\)"', '\\"', cleaned)
-        try:
-            return json.loads(cleaned)
-        except json.JSONDecodeError:
-            return None
-
-
 # ---------------------- Streamlit App ----------------------
  
 st.title("Interactive Interview Simulator")
  
 # Initialize session state variables
-for key in ["interview_stage", "questions", "responses", "allow_interview", "start_interview", "match_score", "match_summary"]:
+for key in ["interview_stage", "questions", "responses", "allow_interview", "start_interview", "match_score", "match_summary","question_index"]:
     if key not in st.session_state:
         st.session_state[key] = 0 if key == "interview_stage" else [] if key in ["questions", "responses"] else False if key in ["allow_interview", "start_interview"] else None
+
+st.session_state.questions = []
 
 # Upload job description
 job_description_file = st.file_uploader("Upload Job Description (PDF, DOCX, TXT)", type=["pdf", "docx", "txt"])
@@ -285,12 +261,45 @@ if st.session_state.match_score is not None:
         st.session_state.allow_interview = True
         st.session_state.start_interview = True
  
+def safe_parse_json(raw_json: str):
+        # Step 0: Check if special character exists
+        try:
+            return json.loads(raw_json)
+        except:
+            pass
+
+        # Step 1: Remove Markdown formatting
+        cleaned = re.sub(r"^```json|```$", "", raw_json.strip(), flags=re.MULTILINE).strip()
+ 
+        # Step 2: Try standard JSON parsing
+        try:
+            return json.loads(cleaned)
+        except json.JSONDecodeError:
+            pass
+ 
+        # Step 3: Try using ast.literal_eval (handles Python-style dicts)
+        try:
+            return ast.literal_eval(cleaned)
+        except (ValueError, SyntaxError):
+            pass
+ 
+        # Step 4: Try fixing common issues manually
+        cleaned = cleaned.replace('\n', '\\n').replace('\r', '')
+        cleaned = re.sub(r'(?<!\\)"', '\\"', cleaned)
+
+        try:
+            return json.loads(cleaned)
+        except json.JSONDecodeError:
+            return None
+ 
+ 
+ 
 # Generate Interview Questions
 if st.session_state.start_interview and st.session_state.allow_interview and not st.session_state.questions:
-      
-    parsed = generate_interview_questions(job_description)
-    #parsed = safe_parse_json(raw_json)
-    st.json(parsed, expanded=False)  # Display the raw JSON for debugging
+ 
+    raw_json = generate_interview_questions(job_description)
+    parsed = safe_parse_json(raw_json)
+ 
     if parsed and isinstance(parsed, dict):
         qa_dict = {
             q.strip(): a.strip()
@@ -304,35 +313,106 @@ if st.session_state.start_interview and st.session_state.allow_interview and not
     else:
         st.error("Failed to parse interview questions. Please try again.")
  
-# Conduct interview
-if st.session_state.questions and st.session_state.allow_interview:
-    if st.session_state.interview_stage < len(st.session_state.questions):
-        question, expected_answer = st.session_state.questions[st.session_state.interview_stage]
-        st.write(f"**Question {st.session_state.interview_stage + 1}:** {question}")
+# ---------------------- Chat Mode Interview ----------------------
  
-        answer_key = f"answer_{st.session_state.interview_stage}"
-        if answer_key not in st.session_state:
-            st.session_state[answer_key] = ""
+st.title("Real-Time Chat Interview Simulator")
  
-        st.session_state[answer_key] = st.text_input("Your answer:", value=st.session_state[answer_key])
+# Initialize chat session state
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
  
-        if st.button("Submit Answer"):
-            st.session_state.responses.append({
-                "question": question,
-                "expected_answer": expected_answer,
-                "user_answer": st.session_state[answer_key]
-            })
-            st.session_state.interview_stage += 1
-            st.success("Answer submitted. Proceed to next question.")
-        
-        if st.button("Next"):
-            st.rerun()
-
+if "chat_mode_active" not in st.session_state:
+    st.session_state.chat_mode_active = False
+ 
+raw_json=[]
+parsed=[]
+ 
+# Start Chat Interview
+if job_description and resume and st.button("Start Chat Interview"):
+    st.session_state.chat_mode_active = True
+    st.session_state.chat_history = [{
+        "role": "interviewer",
+        "content": "Hello! Let's begin your interview based on the job description. Can you briefly introduce yourself?"
+    }]
+ 
+    # Use existing questions if available
+    if st.session_state.questions:
+        parsed = {q: a for q, a in st.session_state.questions}
     else:
-        st.write("Interview completed. Generating skill analysis report...")
-        formatted_responses = "\n".join(
-            f"Q: {r['question']}\nExpected: {r['expected_answer']}\nUser: {r['user_answer']}"
-            for r in st.session_state.responses
+        with st.spinner("Generating interview questions..."):
+            raw_json = generate_interview_questions(job_description)
+            parsed = safe_parse_json(raw_json)
+            st.write(raw_json)
+            if raw_json and isinstance(raw_json, dict):
+                qa_dict = {
+                    q.strip(): a.strip()
+                    for q, a in raw_json.items()
+                    if isinstance(q, str) and isinstance(a, str)
+                }
+               
+                # Limit to 15 questions
+                limited_questions = list(qa_dict.items())[:15]
+                st.session_state.questions = limited_questions
+                st.write(limited_questions)
+                st.session_state.questions = [(q, a) for q, a in qa_dict.items()]
+            else:
+                st.error("Failed to parse interview questions. Please try again.")
+                st.write(raw_json)
+                st.session_state.chat_mode_active = False
+ 
+if st.session_state.chat_mode_active and st.session_state.question_index < len(st.session_state.questions):
+    current_question, current_answer = st.session_state.questions[st.session_state.question_index]
+   
+# Display chat history
+if st.session_state.chat_mode_active:
+    st.subheader("Interview Chat")
+ 
+    for msg in st.session_state.chat_history:
+        if msg["role"] == "interviewer":
+            st.markdown(f"**🧑‍💼 Interviewer:** {msg['content']}")
+        else:
+            st.markdown(f"**🙋 You:** {msg['content']}")
+ 
+    # Input box for candidate response
+    user_input = st.text_input("Your response:", key="chat_input")
+ 
+    if st.button("Send") and user_input:
+        # Add user message to history
+        st.session_state.chat_history.append({"role": "candidate", "content": user_input})
+       
+        # Construct conversation history for prompt
+        chat_prompt = "\n".join(
+            f"{'Candidate' if msg['role']=='candidate' else 'Interviewer'}: {msg['content']}"
+            for msg in st.session_state.chat_history
         )
-        report = simulate_interview(job_description, resume, formatted_responses)
-        st.text_area("Skill Analysis Report", report, height=300)
+ 
+        full_prompt = f"""
+You are a professional interviewer conducting a technical interview based on the following question:
+ 
+{raw_json}
+ 
+Instructions:
+- Conduct the interview in a conversational manner.
+- Ask one question at a time.
+- After each candidate response, provide feedback or ask a relevant follow-up question.
+- Be polite, professional, and insightful.
+- Use the candidate's resume to tailor questions where appropriate.
+- Maintain a natural flow and adapt based on the candidate's performance.
+ 
+Conversation so far:
+{chat_prompt}
+"""
+        # Get LLM response
+        response = llm._call(full_prompt, user)
+        reply = response['data']['content'] # pyright: ignore[reportArgumentType]
+ 
+        # Add interviewer response to history
+        st.session_state.chat_history.append({"role": "interviewer", "content": reply})
+ 
+        if st.session_state.question_index >= len(st.session_state.questions):
+            st.success("✅ Interview completed. Thank you for your responses!")
+ 
+    # Option to reset chat
+    if st.button("Reset Chat"):
+        st.session_state.chat_history = []
+        st.session_state.chat_mode_active = False

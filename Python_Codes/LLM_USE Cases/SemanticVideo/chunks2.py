@@ -6,6 +6,7 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from transformers import pipeline
 from multiprocessing import Pool, cpu_count
+import tqdm
 
 os.environ["PATH"] += os.pathsep + r"C:\ffmpeg\bin"
 #subprocess.run(["ffmpeg", "-version"])
@@ -13,7 +14,7 @@ os.environ["PATH"] += os.pathsep + r"C:\ffmpeg\bin"
 # Step 1: Transcribe the video using Whisper
 def transcribe_video(video_path):
     model = whisper.load_model("base")  # type: ignore
-    result = model.transcribe(video_path)
+    result = model.transcribe(video_path,fp16=False)
     return result['segments']  # List of segments with 'start', 'end', 'text'
 
 # Step 2: Embed the transcript using sentence embeddings with multiprocessing
@@ -82,13 +83,19 @@ def extract_video_segments(video_path, chunks, output_dir="video_chunks"):
 
 # Example usage
 video_file = r"D:\OneDrive - Wipro\Desktop\EF-connect-Recording.mp4"  # Replace with your video file path
-segments = transcribe_video(video_file)
-print(segments)
-embeddings = embed_segments_parallel(segments)
-print(embeddings)
-#chunks = semantic_chunking(segments, embeddings)
-#summaries = summarize_chunks_parallel(chunks)
-#output_folder = extract_video_segments(video_file, chunks)
+# Create tqdm for segment processing
+with tqdm.tqdm(total=1, desc="Processing video segments") as pbar:
+    segments = transcribe_video(video_file)
+    pbar.update(1)
+    print(segments)
+    #embeddings = embed_segments_parallel(segments)
+    #pbar.update(1)
+    #chunks = semantic_chunking(segments, embeddings)
+    #pbar.update(1)
+    #summaries = summarize_chunks_parallel(chunks)
+    #pbar.update(1)
+    #output_folder = extract_video_segments(video_file, chunks)
+    #pbar.update(1)
 
 # Print summaries
 #for i, summary in enumerate(summaries):
