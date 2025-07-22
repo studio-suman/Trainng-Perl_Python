@@ -4,12 +4,29 @@
     "@azure/openai": "^2.0.0-beta.2",
     "del": "^7.0.0",
     "fancy-log": "^2.0.0",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.1",
     "gulp-zip": "^5.1.0",
+    "next": "^15.4.2",
     "openai": "^4.70.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "webpack-stream": "^7.0.0"
   },
   "devDependencies": {
-    "webpack": "^5.74.0"
-  }
+    "@babel/core": "^7.28.0",
+    "@babel/preset-react": "^7.27.1",
+    "babel-loader": "^10.0.0",
+    "webpack": "^5.100.2"
+  },
+  "name": "trainng-perl_python",
+  "version": "1.0.0",
+  "description": "This is my God Resposibility",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
 }
