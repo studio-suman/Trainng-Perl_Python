@@ -188,34 +188,34 @@ st.set_page_config(page_title='Resume Parser', initial_sidebar_state = 'auto')
 
 
 
-    st.markdown("<h1 style='font-size: 30px;color:#4F81BD;'>Resume Parser📄</h1>", unsafe_allow_html=True)
-    st.markdown("<h8 style='font-size: 16px;color:#17365D;'>Upload your resume</h8>", unsafe_allow_html=True)
-    uploaded_file = st.file_uploader("Upload your resume", label_visibility="collapsed", type=["txt", "pdf", "docx"])
+st.markdown("<h1 style='font-size: 30px;color:#4F81BD;'>Resume Parser📄</h1>", unsafe_allow_html=True)
+st.markdown("<h8 style='font-size: 16px;color:#17365D;'>Upload your resume</h8>", unsafe_allow_html=True)
+uploaded_file = st.file_uploader("Upload your resume", label_visibility="collapsed", type=["txt", "pdf", "docx"])
 
-    if uploaded_file:
-        with st.spinner("Reading and parsing resume..."):
-            resume_text = read_resume(uploaded_file)
-            if resume_text:
-                parsed_result = parse_resume(resume_text)
+if uploaded_file:
+    with st.spinner("Reading and parsing resume..."):
+        resume_text = read_resume(uploaded_file)
+        if resume_text:
+            parsed_result = parse_resume(resume_text)
 
-                if parsed_result:
-                    if isinstance(parsed_result, str):
-                        try:
-                            parsed_result = json.loads(parsed_result)
-                        except json.JSONDecodeError as e:
-                            logging.error(f"Failed to decode parsed result: {e}")
-                            st.error("Error parsing the resume. Please try again.")
-                            return
+            if parsed_result:
+                if isinstance(parsed_result, str):
+                    try:
+                        parsed_result = json.loads(parsed_result)
+                    except json.JSONDecodeError as e:
+                        logging.error(f"Failed to decode parsed result: {e}")
+                        st.error("Error parsing the resume. Please try again.")
+                            
 
                     if not isinstance(parsed_result, dict):
                         logging.error("Parsed result is not a dictionary. Cannot proceed.")
                         st.error("Error parsing the resume. Please try again.")
-                        return
+                    
 
                     if 'Name' not in parsed_result:
                         logging.error("The 'Name' field is missing in the parsed result.")
                         st.error("Error parsing the resume. Please try again.")
-                        return
+                        
 
                     # Layout selection UI
                     st.markdown("<h8 style='font-size: 16px;color:#17365D;'>Choose a Layout:</h8>", unsafe_allow_html=True)
