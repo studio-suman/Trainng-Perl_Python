@@ -1,3 +1,4 @@
+from email import message
 import win32com.client
 import re
 from datetime import datetime
@@ -136,7 +137,6 @@ def check_sent_emails(sender):
     except Exception as e:
         logging.error(f"Error checking Sent emails: {e}")
     
-
 
 # Monitor emails and check for replies with specific subject
 while True:
