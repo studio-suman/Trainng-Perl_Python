@@ -6,6 +6,8 @@ export default function MovieGrid() {
 
     const [movies, setMovies] = useState([]) //movies array, setMovies function, useState to modify the state
 
+    const [searchTerm, setsearchTerm] = useState("")
+
     useEffect(() => {
         fetch("movies.json")
             .then(response => response.json()) //response is converted to json
@@ -14,14 +16,15 @@ export default function MovieGrid() {
         [])
 
     return (
-        <div className="movies-grid">
-            {
-                movies.map(movie => //map is a loop function to loop through each of the element
-                (
-                    <MovieCard movie={movie} key={movie.id}></MovieCard>
-                )
-                )
-            }
+        <div>
+            <input type="text" placeholder="Search Movies" className="search-input"/>
+            <div className="movies-grid">
+                {
+                    movies.map(movie => //map is a loop function to loop through each of the element
+                    (
+                        <MovieCard movie={movie} key={movie.id}></MovieCard>
+                    ))}
+            </div>
         </div>
     )
 }
