@@ -1,28 +1,46 @@
-import '../styles.css'
+import "../styles.css";
+import React from "react";
 
-export default function MovieCard({ movie }) {
+export default function MovieCard({ movie, isWatchlisted, toggleWatchlist}) {
+  const handleError = (e) => {
+    //Error Handling
+    e.target.src = "images/default.jpg";
+  };
 
-    const handleError = (e) => {                //Error Handling
-        e.target.src = "images/default.jpg"
+  const getRatingclass = (rating) => {
+    if (rating >= 8) {
+      return "rating-good";
     }
+    if (rating >= 5 && rating < 8) return "rating-ok";
 
-    const getRatingclass = (rating) => {
-        if(rating >= 8 ) {
-            return 'rating-good'
-        }
-        if(rating >=5 && rating <8) return 'rating-ok'
+    if (rating < 5) return "rating-bad";
+  };
 
-        if (rating <5) return 'rating-bad'
-    }
-
-    return (
-        <div key={movie.id} className="movie-card">
-            <img src={`images/${movie.image}`} alt={movie.title} onError={handleError} />
-            <div className="movie-card-info">
-                <h3 className="movie-card-tile">{movie.title}</h3>
-                <p className="movie-card-genre">{movie.genre}</p>
-                <p className={`movie-card-rating ${getRatingclass(movie.rating)}`}>{movie.rating}</p> 
-            </div>
+  return (
+    <div key={movie.id} className="movie-card">
+      <img
+        src={`images/${movie.image}`}
+        alt={movie.title}
+        onError={handleError}
+      />
+      <div className="movie-card-info">
+        <h3 className="movie-card-tile">{movie.title}</h3>
+        <div>
+            <span className="movie-card-genre">{movie.genre}/</span>
+            <span className={`movie-card-rating ${getRatingclass(movie.rating)}`}>
+          {movie.rating}
+        </span>
         </div>
-    ) // calling the rating getRating class
+        <label className="switch">
+            <input type="checkbox" checked={isWatchlisted} onChange={() => toggleWatchlist(movie.id)}>
+            </input>
+            <span className="slider">
+                <span className="slider-label">
+                    {isWatchlisted ? "In Watchlist" : "Add to Watchlist"}
+                </span>
+            </span>
+        </label>
+      </div>
+    </div>
+  ); // calling the rating getRating class
 }

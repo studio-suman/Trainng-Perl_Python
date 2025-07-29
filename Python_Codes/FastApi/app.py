@@ -4,12 +4,14 @@ from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
+
 from pydantic import BaseModel
 
 fake_users_db = {
-    "johndoe": {
-        "username": "johndoe",
-        "full_name": "John Doe",
+    "sumansaha": {
+        "username": "sumansaha",
+        "full_name": "Suman Saha",
         "email": "johndoe@example.com",
         "hashed_password": "fakehashedsecret",
         "disabled": False,
@@ -24,6 +26,17 @@ fake_users_db = {
 }
 
 app = FastAPI()
+
+
+
+# Allow requests from React frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # React dev server
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def fake_hash_password(password: str):
