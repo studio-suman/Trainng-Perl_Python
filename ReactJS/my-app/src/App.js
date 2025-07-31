@@ -4,12 +4,14 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import MovieGrid from "./components/MovieGrid";
 import Watchlist from "./components/Watchlist";
+import Login from './components/LoginPage';
 import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 function App() {
   const [movies, setMovies] = useState([]); //movies array, setMovies function, useState to modify the state
   const [watchlist, setWatchlist] = useState([]);
+
 
   const toggleWatchlist = (movieId) => {
     setWatchlist((prev) =>
@@ -29,7 +31,7 @@ function App() {
     <div className="App">
       <div className="container">
         <Header></Header>
-        <Router>
+                <Router>
           {" "}
           {/*Introducing Router*/}
           <nav>
@@ -71,4 +73,4 @@ function App() {
   );
 }
 
-export default App;
+export default App
