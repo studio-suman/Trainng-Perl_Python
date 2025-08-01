@@ -2,7 +2,8 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
-from backend import models, schemas, auth, database
+from Python_Codes.FastApi.database import database, schemas
+from backend import models, auth
 
 models.Base.metadata.create_all(bind=database.engine)
 app = FastAPI()

@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import sessionmaker, relationship, Session
-from .database import Base
+from ..database.database import Base
 
 class User(Base):
     __tablename__ = "Users_Table"
