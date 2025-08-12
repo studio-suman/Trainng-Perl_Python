@@ -59,7 +59,7 @@ export default function MovieGrid({ movies, watchlist, toggleWatchlist }) {
       <input
         type="text"
         placeholder="Search Movies"
-        className="search-input"
+        className="search-input text-black"
         value={searchTerm}
         onChange={handleSearchChange}
       />{" "}

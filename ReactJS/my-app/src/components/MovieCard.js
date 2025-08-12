@@ -14,7 +14,14 @@ export default function MovieCard({ movie, isWatchlisted, toggleWatchlist}) {
     if (rating >= 5 && rating < 8) return "rating-ok";
 
     if (rating < 5) return "rating-bad";
+
+
   };
+
+  const getRatingclass1 = (rating) => rating>=8 ? "rating-good" : rating < 5 ? "rating-bad" : "rating-ok";
+    
+
+
 
   return (
     <div key={movie.id} className="movie-card">

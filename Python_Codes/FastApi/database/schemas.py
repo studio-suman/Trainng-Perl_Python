@@ -33,3 +33,12 @@ class Item(ItemBase):
     description: str
     class Config:
         orm_mode = True
+
+class Movies(BaseModel):
+    id: int
+    title: str
+    image: str
+    genre: str
+    rating: float
+    class Config:
+        orm_mode = True   

@@ -1,17 +1,26 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./styles.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import MovieGrid from "./components/MovieGrid";
 import Watchlist from "./components/Watchlist";
-import Login from './components/LoginPage';
-import { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Login from "./components/LoginPage";
+import api from "./services/api";
 
 function App() {
-  const [movies, setMovies] = useState([]); //movies array, setMovies function, useState to modify the state
+  const [movies, setMovies] = useState([]);
   const [watchlist, setWatchlist] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
+  const [loggedIn, setLoggedIn] = useState(() => {
+    return !!localStorage.getItem("token");
+  });
+
+  const handleLogin = () => {
+    setLoggedIn(true);
+  };
 
   const toggleWatchlist = (movieId) => {
     setWatchlist((prev) =>
@@ -22,31 +31,61 @@ function App() {
   };
 
   useEffect(() => {
-    fetch("movies.json")
-      .then((response) => response.json()) //response is converted to json
-      .then((data) => setMovies(data));
-  }, []);
+    const controller = new AbortController();
+
+    const load = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const res = await api.get("/movies", { signal: controller.signal });
+        setMovies(res.data);
+      } catch (err) {
+        if (err.name === "CanceledError" || err.code === "ERR_CANCELED") {
+          // request was aborted; ignore
+          return;
+        }
+        const status = err.response?.status;
+        if (status === 401) {
+          // optional: auto-logout on auth failure
+          localStorage.removeItem("token");
+          setLoggedIn(false);
+        }
+        setError(
+          err.response?.data?.message ||
+            err.message ||
+            "Something went wrong while fetching movies."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+    return () => controller.abort();
+  }, [loggedIn]);
 
   return (
-    <div className="App">
-      <div className="container">
-        <Header></Header>
-                <Router>
-          {" "}
-          {/*Introducing Router*/}
-          <nav>
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <Link to="/watchlist">Watchlist</Link>
-              </li>
-            </ul>
-          </nav>
+    <Router>
+      <div className="App">
+        <Header />
+        <div className="container">
+          {loggedIn && (
+            <nav>
+              <ul>
+                <li>
+                  <Link to="/Home">Home</Link>
+                </li>
+                <li>
+                  <Link to="/watchlist">Watchlist</Link>
+                </li>
+              </ul>
+            </nav>
+          )}
           <Routes>
+            <Route path="/" element={<Login onLogin={handleLogin} />} />
+
             <Route
-              path="/"
+              path="/Home"
               element={
                 <MovieGrid
                   movies={movies}
@@ -54,7 +93,7 @@ function App() {
                   toggleWatchlist={toggleWatchlist}
                 />
               }
-            ></Route>
+            />
             <Route
               path="/watchlist"
               element={
@@ -64,13 +103,13 @@ function App() {
                   toggleWatchlist={toggleWatchlist}
                 />
               }
-            ></Route>
+            />
           </Routes>
-        </Router>
+        </div>
+        <Footer />
       </div>
-      <Footer></Footer>
-    </div>
+    </Router>
   );
 }
 
-export default App
+export default App;
