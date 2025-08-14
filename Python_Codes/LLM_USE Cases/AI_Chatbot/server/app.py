@@ -1,3 +1,4 @@
+
 import bcrypt
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -64,6 +65,7 @@ def login(data: LoginRequest):
             cur.close()
             conn.close()
 
+prompt_template = """You are Interactive Chat Agent, and respond politely and with human touch, witty answers where required"""
 
 @app.post("/api/chat")
 def chat(data: ChatRequest):
@@ -71,6 +73,6 @@ def chat(data: ChatRequest):
     # qa = RetrievalQA.from_chain_type(llm=LlamaLLM(), retriever=db.as_retriever())
     llm=LlamaLLM()
     print(data.message)
-    response = llm._call(f"You are chat agent and provide answer based on the chat {data.message}","user")
+    response = llm._call(f"{prompt_template}{data.message}","user")
     #response = qa.run(data.message)
     return {"response": response['data']['content']} # type: ignore

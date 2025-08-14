@@ -7,6 +7,7 @@ import MovieGrid from "./components/MovieGrid";
 import Watchlist from "./components/Watchlist";
 import Login from "./components/LoginPage";
 import api from "./services/api";
+import Registration from "./components/Registration";
 
 function App() {
   const [movies, setMovies] = useState([]);
@@ -18,7 +19,7 @@ function App() {
     return !!localStorage.getItem("token");
   });
 
-  const handleLogin = () => {
+  const handleRegistration = () => {
     setLoggedIn(true);
   };
 
@@ -76,14 +77,14 @@ function App() {
                   <Link to="/Home">Home</Link>
                 </li>
                 <li>
-                  <Link to="/watchlist">Watchlist</Link>
+                  <Link to="/Watchlist">Watchlist</Link>
                 </li>
               </ul>
             </nav>
           )}
           <Routes>
-            <Route path="/" element={<Login onLogin={handleLogin} />} />
-
+            <Route path="/" element={<Login onLogin={handleRegistration} />} />
+            <Route path="/Registration" element={<Registration onLogin={handleRegistration} />} />
             <Route
               path="/Home"
               element={
